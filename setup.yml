@@ -1,0 +1,12 @@
+
+---
+- hosts: hosts
+  gather_facts: True
+  become: yes
+
+  roles:
+    - { role: web}
+    - { role: sql }
+    - { role: es }
+    - { role: python }
+    - { role: app }

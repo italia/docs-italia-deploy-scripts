@@ -1,0 +1,23 @@
+
+- name: postgres key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+  when: sql == 1
+  tags:
+     - setup
+
+- name: Add Postgres repos
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main' state=present
+  when: sql == 1
+  tags:
+     - setup
+
+- name: postgres packages
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  with_items:
+    - postgresql-{{ postgres_version }}
+    - postgresql-contrib-{{ postgres_version }}
+    - postgresql-client-{{ postgres_version }}
+    - python-psycopg2
+  when: sql == 1
+  tags:
+     - setup

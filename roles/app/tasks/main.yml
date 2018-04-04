@@ -1,0 +1,140 @@
+
+- name: support packages
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  with_items:
+    - git
+    - redis-server
+    - redis-tools
+    - ca-certificates
+    - gunicorn
+    - supervisor
+  when: app == 1
+  tags:
+     - setup
+
+- name: check deployment user
+  user: name={{ rtd_user }} state=present home={{ rtd_home }}
+  when: app == 1
+  tags:
+     - deploy
+
+- name: ensure directory structure
+  file: path="{{ item }}" state=directory mode=0755 owner={{ nginx_user }}
+  with_items:
+    - "{{ nginx_logs }}"
+  when: app == 1
+  tags:
+     - deploy
+
+- name: ensure directory structure
+  file: path="{{ rtd_home }}/{{ item }}" state=directory mode=0755 owner={{ rtd_user }}
+  with_items:
+    - log
+  when: app == 1
+  tags:
+     - deploy
+
+- name: check postgres user
+  become_user: "postgres"
+  postgresql_user: name={{ rtd_user }}
+  when: app == 1
+  tags:
+     - deploy
+
+- name: check docs.italia.it db
+  become_user: "postgres"
+  postgresql_db: name={{ rtd_db }} owner={{ rtd_user }}
+  when: app == 1
+  tags:
+     - deploy
+
+- name: install rtd
+  become_user: "{{ rtd_user }}"
+  git: repo={{ rtd_repo }} dest={{ rtd_root }} version={{ rtd_branch }}
+  when: app == 1
+  notify: restart supervisor
+  tags:
+     - deploy
+
+- name: update virtualenv (python 3)
+  pip: requirements="{{ rtd_root }}/requirements/deploy.txt" virtualenv="{{ rtd_virtualenv }}" virtualenv_command="/usr/bin/python{{ python_version }} -m venv"
+  when: app == 1 and python_version != 2.7
+  tags:
+     - deploy
+
+- name: update virtualenv (python 2.7)
+  pip: requirements="{{ rtd_root }}/requirements/deploy.txt" virtualenv="{{ rtd_virtualenv }}" virtualenv_command="/usr/bin/virtualenv -p /usr/bin/python{{ python_version }}"
+  when: app == 1 and python_version == 2.7
+  tags:
+     - deploy
+
+- name: django configuration
+  become_user: "{{ rtd_user }}"
+  template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/settings/{{ item }}"
+  with_items:
+    - local_settings.py
+    - managed.py
+    - admin.py
+    - redirect.py
+  when: app == 1
+  tags:
+     - deploy
+
+- name: run migrations
+  become_user: "{{ rtd_user }}"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py migrate"
+  when: app == 1
+  tags:
+     - deploy
+
+- name: supervisor configuration
+  template: src=../templates/supervisor/{{ item }}  dest=/etc/supervisor/conf.d/{{ item  }}
+  with_items:
+    - admin.conf
+    - build.conf
+    - web.conf
+  notify: reread supervisor
+  when: app == 1
+  tags:
+     - deploy
+
+- name: nginx configuration
+  template: src=../templates/nginx/{{ item }}  dest=/etc/nginx/{{ item  }} force=1
+  with_items:
+    - nginx.conf
+    - conf.d/general-configuration.conf
+    - sites-available/readthedocs-cname.conf
+    - sites-available/readthedocs-dev.conf
+    - sites-available/readthedocs-media.conf
+    - sites-available/readthedocs-redirects.conf
+    - sites-available/readthedocs-site.conf
+    - sites-available/readthedocs-subdomain.conf
+  notify: reload nginx
+  when: app == 1
+  tags:
+     - configuration
+     - deploy  # this is only temporary
+
+- name: disable default  virtualhost
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: restart nginx
+  when: app == 1
+  tags:
+     - configuration
+     - deploy  # this is only temporary
+
+- name: enable virtualhost
+  file: src=/etc/nginx/sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} state=link
+  with_items:
+    - readthedocs-cname.conf
+    - readthedocs-dev.conf
+    - readthedocs-media.conf
+    - readthedocs-redirects.conf
+    - readthedocs-site.conf
+    - readthedocs-subdomain.conf
+  notify: restart nginx
+  when: app == 1
+  tags:
+     - configuration
+     - deploy  # this is only temporary
+

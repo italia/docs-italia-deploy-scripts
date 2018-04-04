@@ -1,0 +1,26 @@
+
+- name: java packages
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  with_items:
+    - openjdk-8-jre-headless
+  when: es == 1
+  tags:
+     - setup
+
+- name: ES packages
+  apt: deb={{ es_path }}
+  when: es == 2
+  tags:
+     - setup-es
+
+- name: pin es version
+  command: apt-mark hold elasticsearch
+  when: es == 1
+  tags:
+     - setup
+
+- name: Enable service elasticsearch
+  service: name=elasticsearch enabled=yes state=started
+  when: es == 1
+  tags:
+     - setup

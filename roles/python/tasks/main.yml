@@ -1,0 +1,33 @@
+
+- name: python packages
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  with_items:
+    - python{{ python_version }}
+    - python{{ python_version }}-dev
+    - virtualenv
+    - build-essential
+    - libxml2-dev
+    - libxslt1-dev
+    - libpq-dev
+    - libtiff5-dev
+    - libjpeg-dev
+    - zlib1g-dev
+    - libfreetype6-dev
+    - libjpeg-turbo-progs
+    - libffi-dev
+  when: python == 1
+  tags:
+     - setup
+
+- name: support packages
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  with_items:
+    - git
+    - redis-server
+    - redis-tools
+    - ca-certificates
+    - gunicorn
+    - supervisor
+  when: python == 1
+  tags:
+     - setup

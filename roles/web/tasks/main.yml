@@ -1,0 +1,6 @@
+
+- name: install nginx
+  apt: pkg=nginx-full state=present install_recommends=no
+  when: http == 1
+  tags:
+    - setup

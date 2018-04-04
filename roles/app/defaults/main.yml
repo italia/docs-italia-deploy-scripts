@@ -1,0 +1,12 @@
+rtd_repo: https://github.com/italia/docs.italia.it/
+rtd_branch: master
+rtd_home: /home/docs
+rtd_user: docs
+rtd_db: docs_italia
+rtd_virtualenv: /home/docs/virtualenv
+rtd_root: "{{ rtd_home }}/docs.italia.it"
+rtd_logs: "{{ rtd_home }}/log"
+nginx_logs: /var/logs/rtd/nginx
+nginx_user: www-data
+rtd_domain: test.docs.local
+rtd_redis_url: localhost:6379/0
