@@ -1,0 +1,11 @@
+- name: ansible postgres integration (python2 )
+  apt: pkg=python-psycopg2 state=present update_cache=true install_recommends=no
+  when: app == 1 and "3" not in ansible_python_interpreter
+  tags:
+     - setup
+
+- name: ansible postgres integration (python 3)
+  apt: pkg=python3-psycopg2 state=present update_cache=true install_recommends=no
+  when: app == 1 and "3" in ansible_python_interpreter
+  tags:
+     - setup

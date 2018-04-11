@@ -6,6 +6,7 @@
 
   roles:
     - { role: update }
+    - { role: ansible }
     - { role: web }
     - { role: sql }
     - { role: es }
