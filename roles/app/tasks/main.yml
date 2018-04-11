@@ -57,13 +57,19 @@
      - deploy
 
 - name: update virtualenv (python 3)
-  pip: requirements="{{ rtd_root }}/requirements/deploy.txt" virtualenv="{{ rtd_virtualenv }}" virtualenv_command="/usr/bin/python{{ python_version }} -m venv"
+  pip:
+    requirements="{{ rtd_root }}/requirements/deploy.txt"
+    virtualenv="{{ rtd_virtualenv }}"
+    virtualenv_command="/usr/bin/python{{ python_version }} -m venv"
   when: app == 1 and python_version != 2.7
   tags:
      - deploy
 
 - name: update virtualenv (python 2.7)
-  pip: requirements="{{ rtd_root }}/requirements/deploy.txt" virtualenv="{{ rtd_virtualenv }}" virtualenv_command="/usr/bin/virtualenv -p /usr/bin/python{{ python_version }}"
+  pip:
+    requirements="{{ rtd_root }}/requirements/deploy.txt"
+    virtualenv="{{ rtd_virtualenv }}"
+    virtualenv_command="/usr/bin/virtualenv -p /usr/bin/python{{ python_version }}"
   when: app == 1 and python_version == 2.7
   tags:
      - deploy
