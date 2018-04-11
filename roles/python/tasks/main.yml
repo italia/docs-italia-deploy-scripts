@@ -19,6 +19,12 @@
   tags:
      - setup
 
+- name: python venv for python3
+  apt: pkg=python{{ python_version }}-venv state=present update_cache=true install_recommends=no
+  when: python == 1 and python_version != 2.7
+  tags:
+     - setup
+
 - name: support packages
   apt: pkg={{ item }} state=present update_cache=true install_recommends=no
   with_items:
