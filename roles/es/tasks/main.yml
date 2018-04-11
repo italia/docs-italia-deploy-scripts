@@ -9,7 +9,7 @@
 
 - name: ES packages
   apt: deb={{ es_path }}
-  when: es == 2
+  when: es == 1
   tags:
      - setup-es
 
