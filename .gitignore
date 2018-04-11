@@ -1,2 +1,5 @@
 hosts
 *.py[co]
+.vagrant
+vagrant.retry
+*.log

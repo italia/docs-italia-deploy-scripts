@@ -1,0 +1,14 @@
+
+---
+- hosts: default
+  gather_facts: True
+  become: yes
+  remote_user: vagrant
+
+  roles:
+    - { role: update }
+    - { role: web, http: 1 }
+    - { role: sql, sql: 1 }
+    - { role: es,  es: 1}
+    - { role: python, python: 1 }
+    - { role: app, app: 1 }
