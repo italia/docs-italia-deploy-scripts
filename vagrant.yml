@@ -13,3 +13,6 @@
     - { role: es,  es: 1}
     - { role: python, python: 1 }
     - { role: app, app: 1 }
+
+  vars:
+    python_version: 3
