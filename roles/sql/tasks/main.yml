@@ -17,7 +17,6 @@
     - postgresql-{{ postgres_version }}
     - postgresql-contrib-{{ postgres_version }}
     - postgresql-client-{{ postgres_version }}
-    - python-psycopg2
   when: sql == 1
   tags:
      - setup

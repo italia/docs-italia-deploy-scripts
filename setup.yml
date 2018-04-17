@@ -4,6 +4,10 @@
   gather_facts: True
   become: yes
 
+  vars_files:
+    - defaults
+    - vault
+
   roles:
     - { role: update }
     - { role: ansible }
@@ -12,3 +16,5 @@
     - { role: es }
     - { role: python }
     - { role: app }
+    - { role: docker }
+    - { role: certbot }

@@ -1,0 +1,40 @@
+- name: Docker key
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg state=present
+  when: worker ==1
+  tags:
+     - setup
+
+- name: Add Docker repos
+  apt_repository: repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable' state=present
+  when: worker ==1
+  tags:
+     - setup
+
+- name: docker packages
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  when: worker ==1
+  with_items:
+    - docker-ce={{ docker_version }}
+  tags:
+     - setup
+
+- name: pin docker version
+  command: apt-mark hold docker
+  when: worker ==1
+  tags:
+     - setup
+
+- name: Override systemd configuration
+  template: src=docker.service dest=/etc/systemd/system/docker.service mode=0755
+  when: http == 1
+  tags:
+     - setup
+
+- name: Enable service docker
+  service: name=docker enabled=yes state=started
+  when: worker ==1
+  tags:
+     - setup
+
+- name: Add 'rtd_user' in the docker group
+  user: name={{ rtd_user }} groups=docker append=yes

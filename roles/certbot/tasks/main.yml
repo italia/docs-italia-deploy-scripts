@@ -1,0 +1,39 @@
+
+---
+- name: Certbot key
+  apt_key: keyserver=keyserver.ubuntu.com id=7BF576066ADA65728FC7E70A8C47BE8E75BCA694 state=present
+  when: worker ==1
+  tags:
+     - setup
+
+- name: Add Certbot repos
+  apt_repository: repo='deb http://ppa.launchpad.net/certbot/certbot/ubuntu {{ ansible_distribution_release }}' state=present
+  when: worker ==1
+  tags:
+     - setup
+
+- name: certbot packages
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  when: worker ==1
+  with_items:
+    - certbot
+  tags:
+     - setup
+
+- name: add renewal crontab
+  template: src=letsencrypt dest=/etc/cron.weekly/letsencrypt mode=0755
+  when: http == 1 and not certbot.stat or not certbot.stat.exists or force
+  tags:
+    - install
+    - crontab
+
+  # these are just a demo. Actual certbot configuration / issue process must be defined
+- name: require certificate
+  command: "certbot certonly {{ test_mode }} --webroot -w {{ cert_www_root }} -d {{ domain }} -n --agree-tos --email {{ cert_email }} {{ certbot_options }} --expand --allow-subset-of-names"
+  when: http == 1 and domain is defined
+  tags: issue
+
+- name: require certificate
+  command: "certbot certonly {{ test_mode }} --webroot -w {{ cert_www_root }} {% for domain in domains.split(',') %} -d{{ domain }}{% endfor %} -n --agree-tos --email {{ cert_email }}{{ certbot_options }} --expand --allow-subset-of-names"
+  when: http == 1 and domains is defined
+  tags: issue

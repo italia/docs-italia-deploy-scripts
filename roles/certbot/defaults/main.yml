@@ -1,0 +1,5 @@
+cert_email: docs@italia.it
+cert_www_root: /var/www/letsencrypt
+test_mode:
+certbot_options:
+test:

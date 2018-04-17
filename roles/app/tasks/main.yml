@@ -13,7 +13,7 @@
      - setup
 
 - name: check deployment user
-  user: name={{ rtd_user }} state=present home={{ rtd_home }}
+  user: name={{ rtd_user }} state=present home={{ rtd_home }} uid=1005
   when: app == 1
   tags:
      - deploy
@@ -57,6 +57,7 @@
      - deploy
 
 - name: update virtualenv (python 3)
+  become_user: "{{ rtd_user }}"
   pip:
     requirements="{{ rtd_root }}/requirements/deploy.txt"
     virtualenv="{{ rtd_virtualenv }}"
@@ -66,6 +67,7 @@
      - deploy
 
 - name: update virtualenv (python 2.7)
+  become_user: "{{ rtd_user }}"
   pip:
     requirements="{{ rtd_root }}/requirements/deploy.txt"
     virtualenv="{{ rtd_virtualenv }}"
@@ -78,7 +80,6 @@
   become_user: "{{ rtd_user }}"
   template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/settings/{{ item }}"
   with_items:
-    - local_settings.py
     - managed.py
     - admin.py
     - redirect.py
