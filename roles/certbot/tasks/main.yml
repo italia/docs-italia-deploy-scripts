@@ -7,7 +7,7 @@
      - setup
 
 - name: Add Certbot repos
-  apt_repository: repo='deb http://ppa.launchpad.net/certbot/certbot/ubuntu {{ ansible_distribution_release }}' state=present
+  apt_repository: repo='deb http://ppa.launchpad.net/certbot/certbot/ubuntu {{ ansible_distribution_release }} main' state=present
   when: worker ==1
   tags:
      - setup
@@ -22,7 +22,7 @@
 
 - name: add renewal crontab
   template: src=letsencrypt dest=/etc/cron.weekly/letsencrypt mode=0755
-  when: http == 1 and not certbot.stat or not certbot.stat.exists or force
+  when: http == 1
   tags:
     - install
     - crontab

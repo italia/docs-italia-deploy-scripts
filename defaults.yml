@@ -1,9 +1,14 @@
 force: 0
 docker_main_ip: 127.0.0.1
 docker_version: 17.06.2~ce-0~ubuntu
-worker_hosts: 'localhost'
-es_hosts: 'localhost'
-app_hosts: 'localhost'
+# FIXME: Currently only 'docs' works
+# comma separated list of hostnames for the different roles
+worker_hosts: 'docs'
+# comma separated list of hostnames for the different roles
+es_hosts: 'docs'
+# comma separated list of hostnames for the different roles
+app_hosts: 'docs'
+
 api_host: 'localhost'
 db_host: 'localhost'
 db_pwd: !vault |
@@ -50,3 +55,4 @@ SECRET_KEY: !vault |
           3264323235336434350a346533643838623738653831396530626363646632626264353439376464
           65653539306431386134336664366162636130653766646363623035366662306366643334366234
           6437343539666338353431373133333462646565396163303535
+DEBUG: True

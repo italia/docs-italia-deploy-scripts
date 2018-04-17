@@ -5,7 +5,7 @@
   become: yes
 
   vars_files:
-    - defaults
+    - defaults.yml
     - vault
 
   roles:
@@ -15,6 +15,6 @@
     - { role: sql }
     - { role: es }
     - { role: python }
-    - { role: app }
     - { role: docker }
     - { role: certbot }
+    - { role: app }

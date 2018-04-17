@@ -15,6 +15,7 @@
   when: worker ==1
   with_items:
     - docker-ce={{ docker_version }}
+    - aufs-tools
   tags:
      - setup
 
@@ -25,7 +26,10 @@
      - setup
 
 - name: Override systemd configuration
-  template: src=docker.service dest=/etc/systemd/system/docker.service mode=0755
+  template: src=docker.service dest=/etc/systemd/system/docker.service mode=0644
+  notify:
+    - systemctl daemon-reload
+    - restart docker
   when: http == 1
   tags:
      - setup

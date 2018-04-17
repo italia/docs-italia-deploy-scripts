@@ -1,21 +1,26 @@
 rtd_repo: https://github.com/italia/docs.italia.it/
-rtd_branch: master
+rtd_italia_repo: https://github.com/yakky/italia_rtd/
+rtd_branch: rm-publisher
+rtd_italia_branch: master
 rtd_home: /home/docs
 rtd_user: docs
 rtd_db_name: docs_italia
 rtd_db_user: docs
-rtd_db_host: localhost
+rtd_db_host:
 rtd_db_pass:
 rtd_db_port: 5432
 rtd_virtualenv: /home/docs/virtualenv
 rtd_root: "{{ rtd_home }}/docs.italia.it"
+rtd_italia_root: "{{ rtd_home }}/italia_rtd"
 rtd_logs: "{{ rtd_home }}/log"
 nginx_logs: /var/logs/rtd/nginx
 nginx_user: www-data
 rtd_domain: test.docs.local
-rtd_redis_url: localhost:6379/0
+rtd_redis_celery: localhost:6379/1
+rtd_redis_cache: localhost:6379/0
+rtd_redis_stats: localhost:6379/2
 rtd_proto: http
 DEFAULT_FROM_EMAIL: 'admin@docs.italia.it'
-PUBLIC_API_URL: 'https://docs.italia.it'
-PUBLIC_DOMAIN: 'https://docs.italia.it'
-MEDIA_URL: 'https://dev.docs.italia.it/media'
+PUBLIC_API_URL: 'http://dev.test.docs.local'
+PUBLIC_DOMAIN: 'dev.test.docs.local'
+MEDIA_URL: 'http://dev.test.docs.local/media/'

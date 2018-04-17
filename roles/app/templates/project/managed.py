@@ -1,9 +1,15 @@
 # Managed settings file
 
 import os
+import re
 
-from readthedocs.core.settings import Settings
 from .base import CommunityBaseSettings
+
+_redis = {
+    'default': dict(zip(['host', 'port', 'db'], re.split(':|/', '{{ rtd_redis_cache }}'))),
+    'celery': dict(zip(['host', 'port', 'db'], re.split(':|/', '{{ rtd_redis_celery }}'))),
+    'stats': dict(zip(['host', 'port', 'db'], re.split(':|/', '{{ rtd_redis_stats }}'))),
+}
 
 
 class CommunityProdSettings(CommunityBaseSettings):
@@ -16,11 +22,11 @@ class CommunityProdSettings(CommunityBaseSettings):
     PUBLIC_API_URL = '{{ PUBLIC_API_URL }}'
 
     # General settings
-    DEBUG = False
+    DEBUG = {{ DEBUG }}
     TEMPLATE_DEBUG = False
 
     MEDIA_URL = '{{ MEDIA_URL }}'
-    STATIC_URL = '{{ MEDIA_URL }}/static/'
+    STATIC_URL = '{{ MEDIA_URL }}static/'
     ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
     SECRET_KEY = '{{ SECRET_KEY }}'
     DEFAULT_FROM_EMAIL = '{{ DEFAULT_FROM_EMAIL }}'
@@ -55,8 +61,8 @@ class CommunityProdSettings(CommunityBaseSettings):
         in _redis.items()
         if cache_name is not 'celery'
     )
-    BROKER_URL = 'redis://{{ rtd_redis_url }}'
-    CELERY_RESULT_BACKEND = 'redis://{{ rtd_redis_url }}'
+    BROKER_URL = 'redis://{{ rtd_redis_celery }}'
+    CELERY_RESULT_BACKEND = 'redis://{{ rtd_redis_celery }}'
 
     # Docker
     DOCKER_SOCKET = 'tcp://{{ docker_main_ip }}:2375'
@@ -80,11 +86,13 @@ class CommunityProdSettings(CommunityBaseSettings):
     CELERY_TASK_RESULT_EXPIRES = 7200
 
     # Elastic Search
-    ES_HOSTS = [{{ es_hosts }}]
+    ES_HOSTS = '{{ es_hosts }}'.split(',')
 
     # RTD settings
-    MULTIPLE_APP_SERVERS = [{{ app_hosts }}]
-    MULTIPLE_BUILD_SERVERS = [{{ worker_hosts }}]
+    # This goes together with FILE_SYNCER setting
+    # eg: FILE_SINCER = 'readthedocs.builds.syncers.*' (likely RemoteSyncer)
+    MULTIPLE_APP_SERVERS = '{{ app_hosts }}'.split(',')
+    MULTIPLE_BUILD_SERVERS = '{{ worker_hosts }}'.split(',')
     SLUMBER_API_HOST = 'http://{{ api_host }}'
     SLUMBER_USERNAME = '{{ SLUMBER_USERNAME }}'
     SLUMBER_PASSWORD = '{{ SLUMBER_PASSWORD }}'
@@ -109,8 +117,8 @@ class CommunityProdSettings(CommunityBaseSettings):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
     # Social Auth
-    GITHUB_APP_ID = {{ GITHUB_APP_ID }}
-    GITHUB_API_SECRET = {{ GITHUB_API_SECRET }}
+    GITHUB_APP_ID = '{{ GITHUB_APP_ID }}'
+    GITHUB_API_SECRET = '{{ GITHUB_API_SECRET }}'
 
     SOCIALACCOUNT_PROVIDERS = {
         'github': {'SCOPE': ['user:email', 'read:org', 'admin:repo_hook', 'repo:status']}

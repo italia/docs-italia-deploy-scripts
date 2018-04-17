@@ -36,14 +36,21 @@
 
 - name: check postgres user
   become_user: "postgres"
-  postgresql_user: name={{ rtd_user }}
+  postgresql_user: name={{ rtd_db_user }}
   when: app == 1
   tags:
      - deploy
 
 - name: check docs.italia.it db
   become_user: "postgres"
-  postgresql_db: name={{ rtd_db }} owner={{ rtd_user }}
+  postgresql_db: name={{ rtd_db_name }} owner={{ rtd_db_user }}
+  when: app == 1
+  tags:
+     - deploy
+
+- name: install italia_rtd
+  become_user: "{{ rtd_user }}"
+  git: repo={{ rtd_italia_repo }} dest={{ rtd_italia_root }} version={{ rtd_italia_branch }}
   when: app == 1
   tags:
      - deploy
@@ -59,9 +66,9 @@
 - name: update virtualenv (python 3)
   become_user: "{{ rtd_user }}"
   pip:
-    requirements="{{ rtd_root }}/requirements/deploy.txt"
-    virtualenv="{{ rtd_virtualenv }}"
-    virtualenv_command="/usr/bin/python{{ python_version }} -m venv"
+    requirements: "{{ rtd_root }}/requirements/deploy.txt"
+    virtualenv: "{{ rtd_virtualenv }}"
+    virtualenv_command: "/usr/bin/python{{ python_version }} -m venv"
   when: app == 1 and python_version != 2.7
   tags:
      - deploy
@@ -69,10 +76,38 @@
 - name: update virtualenv (python 2.7)
   become_user: "{{ rtd_user }}"
   pip:
-    requirements="{{ rtd_root }}/requirements/deploy.txt"
-    virtualenv="{{ rtd_virtualenv }}"
-    virtualenv_command="/usr/bin/virtualenv -p /usr/bin/python{{ python_version }}"
+    requirements: "{{ rtd_root }}/requirements/deploy.txt"
+    virtualenv: "{{ rtd_virtualenv }}"
+    virtualenv_command: "/usr/bin/virtualenv -p /usr/bin/python{{ python_version }}"
   when: app == 1 and python_version == 2.7
+  tags:
+     - deploy
+
+- name: install italia_rtd in virtualenv
+  become_user: "{{ rtd_user }}"
+  pip:
+    name: "file://{{ rtd_italia_root }}"
+    virtualenv: "{{ rtd_virtualenv }}"
+  when: app == 1
+  tags:
+     - deploy
+
+- name: install redirect app in pythonpath
+  become_user: "{{ rtd_user }}"
+  template: src=../templates/package/redirect.py dest="{{ rtd_root }}/redirect.py"
+  when: app == 1
+  tags:
+     - deploy
+
+- name: install redirect app requirements in virtualenv
+  become_user: "{{ rtd_user }}"
+  pip:
+    name: "{{ item }}"
+    virtualenv: "{{ rtd_virtualenv }}"
+  with_items:
+    - django-restricted-sessions
+    - "Flask==0.10.0"
+  when: app == 1
   tags:
      - deploy
 
@@ -89,7 +124,14 @@
 
 - name: run migrations
   become_user: "{{ rtd_user }}"
-  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py migrate"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py migrate --settings=readthedocs.settings.managed"
+  when: app == 1
+  tags:
+     - deploy
+
+- name: run collectstatic
+  become_user: "{{ rtd_user }}"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py collectstatic -lc --noinput --settings=readthedocs.settings.managed"
   when: app == 1
   tags:
      - deploy
@@ -100,7 +142,7 @@
     - admin.conf
     - build.conf
     - web.conf
-  notify: reread supervisor
+  notify: update supervisor
   when: app == 1
   tags:
      - deploy

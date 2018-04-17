@@ -8,7 +8,7 @@
      - setup
 
 - name: ES key
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+  apt_key: url=https://artifacts.elastic.co/GPG-KEY-elasticsearch state=present
   when: es == 1
   tags:
      - setup
@@ -29,7 +29,7 @@
   apt: pkg={{ item }} state=present update_cache=true install_recommends=no
   when: es == 1
   with_items:
-    - elasticsearch
+    - elasticsearch={{ es_version }}
   tags:
      - setup
 

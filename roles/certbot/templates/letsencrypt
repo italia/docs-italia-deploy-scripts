@@ -1,2 +1,2 @@
 #!/bin/bash
-{{ venvs_path }}/certbot/bin/certbot renew --post-hook "service nginx reload"
+certbot renew --post-hook "service nginx reload"

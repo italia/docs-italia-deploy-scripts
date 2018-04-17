@@ -1,8 +1,8 @@
 - name: restart supervisor
   service: name=supervisor state=restarted
 
-- name: reread supervisor
-  command: supervisorctl reread
+- name: update supervisor
+  command: supervisorctl update
 
 - name: restart nginx
   service: name=nginx state=restarted

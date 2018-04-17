@@ -48,3 +48,17 @@ Setup
 * Create a text file containing the vault password (es: ``vault.txt``)
 * Run the ansible with ``ansible-playbook -i hosts --vault-password-file=vault.txt setup.yml``
 
+====
+TODO
+====
+
+* [ ] Handle or document data needed for a working setup
+* [ ] move italia_rtd to official repo
+* [ ] Documentation URL has https hardcoded (from italia_rtd.resolver.ItaliaResolver.resolve)
+* [ ] nginx configuration files cleanup / refactoring
+* [ ] should default variable target a development or production host type?
+* [ ] move redirect app and some missing python deps in the repos
+* [ ] improve variable placement / naming
+* [ ] improve multi server settings
+* [ ] improve how django management comments are run
+* [ ] should docker image be pulled during default installation? It's a long process (3GB+ image)
