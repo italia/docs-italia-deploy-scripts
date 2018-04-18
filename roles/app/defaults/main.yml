@@ -24,3 +24,4 @@ DEFAULT_FROM_EMAIL: 'admin@docs.italia.it'
 PUBLIC_API_URL: 'http://dev.test.docs.local'
 PUBLIC_DOMAIN: 'dev.test.docs.local'
 MEDIA_URL: 'http://dev.test.docs.local/media/'
+DEBUG: TRUE
