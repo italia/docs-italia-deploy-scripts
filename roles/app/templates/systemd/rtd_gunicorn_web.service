@@ -1,0 +1,17 @@
+[Unit]
+Description=RTD web interface
+After=network.target
+
+[Service]
+User={{ rtd_user }}
+Group={{ rtd_user }}
+EnvironmentFile={{ rtd_home }}/rtd_environment
+WorkingDirectory={{ rtd_root }}/readthedocs
+ExecStart={{ rtd_virtualenv }}/bin/gunicorn wsgi:application --pid ${GUNICORN_WEB_PID} --log-syslog --log-syslog-prefix '${GUNICORN_WEB_PREFIX}' -w ${GUNICORN_WEB_WORKERS} -b ${GUNICORN_WEB_IP}:${GUNICORN_WEB_PORT} --error-logfile=${GUNICORN_WEB_ERROR}
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+PIDFile=/run/rtd/web.pid
+
+[Install]
+WantedBy=multi-user.target

@@ -27,7 +27,7 @@ The following global variables (tipically to be defined on the hosts) are availa
 * python[=1]: Install python environment
 * app[=1]: Install rtd
 * sql[=1]: Install postgres
-* python_version=2.7|3.x: Python version to be used to run rtd
+* python_version=2.7|[3.x]: Python version to be used to run rtd
 * worker[=1]: Install worker-related packages (docker)
 * ansible_python_interpreter[=/usr/bin/python3]: Path to python interpreter on remote
 * force: general variable to force actions
@@ -43,10 +43,30 @@ Setup
 * Create a virtualenv with requirements installed from ``requirements.txt``
 * Create a host inventory
 * Create a vault file named ``vault`` by running ``ansible-vault create vault``
-+ Provide a password to encrypt the vault
+* Provide a password to encrypt the vault
 * Add the remote machines password as ``ansible_become_pass: mysudopassword``
 * Create a text file containing the vault password (es: ``vault.txt``)
 * Run the ansible with ``ansible-playbook -i hosts --vault-password-file=vault.txt setup.yml``
+
+
+Available tags
+==============
+
+* setup: services installation:
+    * nginx
+    * elasticsearch
+    * postgres
+    * python interpreter
+    * docker
+
+* init: data initialization
+    * pull docker image
+
+* configuration: configuration updates
+    * services configuration for rtd projects
+
+* deploy: application deployment
+    * django projects deployment
 
 ====
 TODO

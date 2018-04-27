@@ -1,0 +1,19 @@
+[Unit]
+Description=RTD admin interface
+After=network.target
+
+[Service]
+User={{ rtd_user }}
+Group={{ rtd_user }}
+RuntimeDirectory=gunicorn
+EnvironmentFile={{ rtd_home }}/rtd_environment
+Environment=DJANGO_SETTINGS_MODULE="readthedocs.settings.admin"
+WorkingDirectory={{ rtd_root }}/readthedocs
+ExecStart={{ rtd_virtualenv }}/bin/gunicorn wsgi:application --pid ${GUNICORN_ADMIN_PID} --log-syslog --log-syslog-prefix '${GUNICORN_ADMIN_PREFIX}' -w ${GUNICORN_ADMIN_WORKERS} -b ${GUNICORN_ADMIN_IP}:${GUNICORN_ADMIN_PORT} --error-logfile=${GUNICORN_ADMIN_ERROR}
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+PIDFile=/run/rtd/admin.pid
+
+[Install]
+WantedBy=multi-user.target

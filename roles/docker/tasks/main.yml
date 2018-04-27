@@ -20,7 +20,7 @@
      - setup
 
 - name: pin docker version
-  command: apt-mark hold docker
+  command: apt-mark hold docker-ce
   when: worker ==1
   tags:
      - setup
@@ -28,7 +28,7 @@
 - name: Override systemd configuration
   template: src=docker.service dest=/etc/systemd/system/docker.service mode=0644
   notify:
-    - systemctl daemon-reload
+    - reload systemd
     - restart docker
   when: http == 1
   tags:

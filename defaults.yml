@@ -1,6 +1,6 @@
 force: 0
-docker_main_ip: 127.0.0.1
-docker_version: 17.06.2~ce-0~ubuntu
+# apt cache timing
+cache_valid_time: 3600
 # FIXME: Currently only 'docs' works
 # comma separated list of hostnames for the different roles
 worker_hosts: 'docs'
@@ -8,9 +8,9 @@ worker_hosts: 'docs'
 es_hosts: 'docs'
 # comma separated list of hostnames for the different roles
 app_hosts: 'docs'
-
 api_host: 'localhost'
 db_host: 'localhost'
+
 db_pwd: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           36666664663439383331613466336563306437366335633538343966313264663635383031346163

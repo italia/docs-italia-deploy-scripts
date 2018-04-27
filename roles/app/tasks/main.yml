@@ -7,15 +7,15 @@
     - redis-tools
     - ca-certificates
     - gunicorn
-    - supervisor
   when: app == 1
   tags:
      - setup
 
 - name: check deployment user
-  user: name={{ rtd_user }} state=present home={{ rtd_home }} uid=1005
+  user: name={{ rtd_user }} state=present home={{ rtd_home }} uid=1005 group={{ rtd_user }} shell=/bin/bash
   when: app == 1
   tags:
+     - setup
      - deploy
 
 - name: ensure directory structure
@@ -24,6 +24,7 @@
     - "{{ nginx_logs }}"
   when: app == 1
   tags:
+     - setup
      - deploy
 
 - name: ensure directory structure
@@ -32,6 +33,7 @@
     - log
   when: app == 1
   tags:
+     - setup
      - deploy
 
 - name: check postgres user
@@ -39,6 +41,7 @@
   postgresql_user: name={{ rtd_db_user }}
   when: app == 1
   tags:
+     - setup
      - deploy
 
 - name: check docs.italia.it db
@@ -46,6 +49,7 @@
   postgresql_db: name={{ rtd_db_name }} owner={{ rtd_db_user }}
   when: app == 1
   tags:
+     - setup
      - deploy
 
 - name: install italia_rtd
@@ -59,7 +63,7 @@
   become_user: "{{ rtd_user }}"
   git: repo={{ rtd_repo }} dest={{ rtd_root }} version={{ rtd_branch }}
   when: app == 1
-  notify: restart supervisor
+  notify: "restart rtd"
   tags:
      - deploy
 
@@ -83,23 +87,7 @@
   tags:
      - deploy
 
-- name: install italia_rtd in virtualenv
-  become_user: "{{ rtd_user }}"
-  pip:
-    name: "file://{{ rtd_italia_root }}"
-    virtualenv: "{{ rtd_virtualenv }}"
-  when: app == 1
-  tags:
-     - deploy
-
-- name: install redirect app in pythonpath
-  become_user: "{{ rtd_user }}"
-  template: src=../templates/package/redirect.py dest="{{ rtd_root }}/redirect.py"
-  when: app == 1
-  tags:
-     - deploy
-
-- name: install redirect app requirements in virtualenv
+- name: install additional requirements in virtualenv
   become_user: "{{ rtd_user }}"
   pip:
     name: "{{ item }}"
@@ -107,6 +95,16 @@
   with_items:
     - django-restricted-sessions
     - "Flask==0.10.0"
+    - "setuptools>=33"
+  when: app == 1
+  tags:
+     - deploy
+
+- name: install italia_rtd in virtualenv
+  become_user: "{{ rtd_user }}"
+  pip:
+    name: "file://{{ rtd_italia_root }}"
+    virtualenv: "{{ rtd_virtualenv }}"
   when: app == 1
   tags:
      - deploy
@@ -117,6 +115,14 @@
   with_items:
     - managed.py
     - admin.py
+  when: app == 1
+  tags:
+     - deploy
+
+- name: django configuration
+  become_user: "{{ rtd_user }}"
+  template: src=../templates/project/{{ item }} dest="{{ rtd_italia_root }}/italia_rtd/settings_{{ item }}"
+  with_items:
     - redirect.py
   when: app == 1
   tags:
@@ -136,15 +142,56 @@
   tags:
      - deploy
 
-- name: supervisor configuration
-  template: src=../templates/supervisor/{{ item }}  dest=/etc/supervisor/conf.d/{{ item  }}
+- name: systemd environment
+  template: src=../templates/systemd/{{ item }}  dest="{{ rtd_home}}/{{ item }}" mode=644
   with_items:
-    - admin.conf
-    - build.conf
-    - web.conf
-  notify: update supervisor
+    - rtd_environment
   when: app == 1
   tags:
+     - configuration
+     - deploy
+
+- name: tempfile
+  template: src=../templates/systemd/tempfile  dest=/etc/tmpfiles.d/rtd.conf mode=644 force=1
+  when: app == 1
+  tags:
+     - deploy
+
+- name: systemd-tempfile
+  command: systemd-tmpfiles --create
+  when: app == 1
+  tags:
+     - configuration
+     - deploy
+
+- name: systemd configuration
+  template: src=../templates/systemd/{{ item }}  dest=/etc/systemd/system/{{ item }} mode=644 force=1
+  with_items:
+    - rtd_celery_build.service
+    - rtd_celery_docs.service
+    - rtd_celery_web.service
+    - rtd_gunicorn_admin.service
+    - rtd_gunicorn_api.service
+    - rtd_gunicorn_redirect.service
+    - rtd_gunicorn_web.service
+  when: app == 1
+  tags:
+     - configuration
+     - deploy
+
+- name: systemd enable
+  systemd: name="{{ item }}" state=restarted enabled=True daemon_reload=yes
+  with_items:
+    - rtd_celery_build.service
+    - rtd_celery_docs.service
+    - rtd_celery_web.service
+    - rtd_gunicorn_admin.service
+    - rtd_gunicorn_api.service
+    - rtd_gunicorn_redirect.service
+    - rtd_gunicorn_web.service
+  when: app == 1
+  tags:
+     - configuration
      - deploy
 
 - name: nginx configuration
@@ -172,6 +219,9 @@
      - configuration
      - deploy  # this is only temporary
 
+- name: log dir
+  file: path="{{ nginx_logs }}" state=directory owner=www-data group=adm
+
 - name: enable virtualhost
   file: src=/etc/nginx/sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} state=link
   with_items:
@@ -186,4 +236,10 @@
   tags:
      - configuration
      - deploy  # this is only temporary
+
+- name: pull docker image ... please wait ... it takes a long time
+  command: docker pull "{{ docker_rtd_image }}"
+  tags:
+     - setup
+     - init
 

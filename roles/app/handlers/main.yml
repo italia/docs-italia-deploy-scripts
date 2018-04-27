@@ -1,8 +1,30 @@
-- name: restart supervisor
-  service: name=supervisor state=restarted
+- name: restart rtd_celery_build
+  service: name=rtd_celery_build state=restarted
+  listen: "restart rtd"
 
-- name: update supervisor
-  command: supervisorctl update
+- name: restart rtd_celery_docs
+  service: name=rtd_celery_docs state=restarted
+  listen: "restart rtd"
+
+- name: restart rtd_celery_web
+  service: name=rtd_celery_web state=restarted
+  listen: "restart rtd"
+
+- name: restart rtd_gunicorn_web
+  service: name=rtd_gunicorn_web state=restarted
+  listen: "restart rtd"
+
+- name: restart rtd_gunicorn_admin
+  service: name=rtd_gunicorn_admin state=restarted
+  listen: "restart rtd"
+
+- name: restart rtd_gunicorn_api
+  service: name=rtd_gunicorn_api state=restarted
+  listen: "restart rtd"
+
+- name: restart rtd_gunicorn_redirect
+  service: name=rtd_gunicorn_redirect state=restarted
+  listen: "restart rtd"
 
 - name: restart nginx
   service: name=nginx state=restarted

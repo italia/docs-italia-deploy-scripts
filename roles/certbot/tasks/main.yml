@@ -24,16 +24,5 @@
   template: src=letsencrypt dest=/etc/cron.weekly/letsencrypt mode=0755
   when: http == 1
   tags:
-    - install
-    - crontab
-
-  # these are just a demo. Actual certbot configuration / issue process must be defined
-- name: require certificate
-  command: "certbot certonly {{ test_mode }} --webroot -w {{ cert_www_root }} -d {{ domain }} -n --agree-tos --email {{ cert_email }} {{ certbot_options }} --expand --allow-subset-of-names"
-  when: http == 1 and domain is defined
-  tags: issue
-
-- name: require certificate
-  command: "certbot certonly {{ test_mode }} --webroot -w {{ cert_www_root }} {% for domain in domains.split(',') %} -d{{ domain }}{% endfor %} -n --agree-tos --email {{ cert_email }}{{ certbot_options }} --expand --allow-subset-of-names"
-  when: http == 1 and domains is defined
-  tags: issue
+     - setup
+     - configuration
