@@ -74,11 +74,11 @@ TODO
 
 * [ ] Handle or document data needed for a working setup
 * [ ] move italia_rtd to official repo
-* [ ] Documentation URL has https hardcoded (from italia_rtd.resolver.ItaliaResolver.resolve)
+* [x] Documentation URL has https hardcoded (from italia_rtd.resolver.ItaliaResolver.resolve)
 * [ ] nginx configuration files cleanup / refactoring
 * [ ] should default variable target a development or production host type?
-* [ ] move redirect app and some missing python deps in the repos
-* [ ] improve variable placement / naming
+* [x] move redirect app and some missing python deps in the repos
+* [x] improve variable placement / naming
 * [ ] improve multi server settings
-* [ ] improve how django management comments are run
-* [ ] should docker image be pulled during default installation? It's a long process (3GB+ image)
+* [ ] improve how django management commands are run
+* [x] should docker image be pulled during default installation? It's a long process (3GB+ image)

@@ -16,6 +16,7 @@
   with_items:
     - docker-ce={{ docker_version }}
     - aufs-tools
+    - cgroupfs-mount
   tags:
      - setup
 

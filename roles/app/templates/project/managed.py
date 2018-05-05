@@ -20,6 +20,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     USE_SUBDOMAIN = False
     PUBLIC_DOMAIN = '{{ PUBLIC_DOMAIN }}'
     PUBLIC_API_URL = '{{ PUBLIC_API_URL }}'
+    PUBLIC_PROTO = '{{ rtd_proto }}'
 
     # General settings
     DEBUG = {{ DEBUG }}
@@ -37,10 +38,6 @@ class CommunityProdSettings(CommunityBaseSettings):
     @property
     def INSTALLED_APPS(self):  # noqa
         apps = super(CommunityProdSettings, self).INSTALLED_APPS
-        # riccardo: HACK, don't add proprietary extensions
-        #apps.extend([
-        #    'readthedocsext.monitoring',
-        #])
         # Insert our depends above RTD applications, after guaranteed third
         # party package
         apps.insert(apps.index('rest_framework'), 'italia_rtd')
