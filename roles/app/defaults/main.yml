@@ -25,3 +25,4 @@ PUBLIC_API_URL: 'http://dev.test.docs.local'
 PUBLIC_DOMAIN: 'dev.test.docs.local'
 MEDIA_URL: 'http://dev.test.docs.local/media/'
 docker_rtd_image: readthedocs/build:2.0
+DEBUG: TRUE
