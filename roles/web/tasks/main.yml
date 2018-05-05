@@ -4,3 +4,6 @@
   when: http == 1
   tags:
     - setup
+
+- name: enable nginx on ufw
+  ufw: rule=allow name="Ngnix Full"
