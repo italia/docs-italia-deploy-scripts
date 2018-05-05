@@ -1,0 +1,19 @@
+[Unit]
+Description=RTD redirect interface
+After=network.target
+
+[Service]
+User={{ rtd_user }}
+Group={{ rtd_user }}
+RuntimeDirectory=gunicorn
+EnvironmentFile={{ rtd_home }}/rtd_environment
+Environment=PYTHONUNBUFFERED=True
+WorkingDirectory={{ rtd_italia_root }}
+ExecStart={{ rtd_virtualenv }}/bin/gunicorn redirect:app --pid ${GUNICORN_REDIRECT_PID} --log-syslog --log-syslog-prefix '${GUNICORN_REDIRECT_PREFIX}' -w ${GUNICORN_REDIRECT_WORKERS} -b ${GUNICORN_REDIRECT_IP}:${GUNICORN_REDIRECT_PORT} --error-logfile=${GUNICORN_REDIRECT_ERROR}
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+PIDFile=/run/rtd/redirect.pid
+
+[Install]
+WantedBy=multi-user.target

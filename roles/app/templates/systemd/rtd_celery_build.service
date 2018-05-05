@@ -1,0 +1,17 @@
+[Unit]
+Description=RTD Celery build worker
+After=network.target
+
+[Service]
+Type=forking
+User={{ rtd_user }}
+Group={{ rtd_user }}
+EnvironmentFile={{ rtd_home }}/rtd_environment
+WorkingDirectory={{ rtd_root }}/readthedocs
+ExecStart={{ rtd_virtualenv }}/bin/celery multi start build -A ${CELERY_APP} ${CELERY_BUILD_OPTS} -l ${CELERY_LOGLEVEL} --pidfile="${CELERY_BUILD_PID}" --logfile=${CELERY_BUILD_LOG}
+ExecReload={{ rtd_virtualenv }}/bin/celery multi stopwait build -A ${CELERY_APP} ${CELERY_BUILD_OPTS} -l ${CELERY_LOGLEVEL} --pidfile="${CELERY_BUILD_PID}" --logfile=${CELERY_BUILD_LOG}
+ExecStop={{ rtd_virtualenv }}/bin/celery multi restart build -A ${CELERY_APP} ${CELERY_BUILD_OPTS} -l ${CELERY_LOGLEVEL} --pidfile="${CELERY_BUILD_PID}" --logfile=${CELERY_BUILD_LOG}
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
