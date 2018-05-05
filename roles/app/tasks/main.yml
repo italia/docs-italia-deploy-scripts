@@ -199,12 +199,8 @@
   with_items:
     - nginx.conf
     - conf.d/general-configuration.conf
-    - sites-available/readthedocs-cname.conf
     - sites-available/readthedocs-dev.conf
-    - sites-available/readthedocs-media.conf
-    - sites-available/readthedocs-redirects.conf
     - sites-available/readthedocs-site.conf
-    - sites-available/readthedocs-subdomain.conf
   notify: reload nginx
   when: app == 1
   tags:
@@ -225,12 +221,8 @@
 - name: enable virtualhost
   file: src=/etc/nginx/sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} state=link
   with_items:
-    - readthedocs-cname.conf
     - readthedocs-dev.conf
-    - readthedocs-media.conf
-    - readthedocs-redirects.conf
     - readthedocs-site.conf
-    - readthedocs-subdomain.conf
   notify: restart nginx
   when: app == 1
   tags:

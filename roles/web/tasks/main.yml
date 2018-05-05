@@ -6,4 +6,4 @@
     - setup
 
 - name: enable nginx on ufw
-  ufw: rule=allow name="Ngnix Full"
+  ufw: rule=allow name="Nginx Full"
