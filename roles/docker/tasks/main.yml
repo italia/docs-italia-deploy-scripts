@@ -31,7 +31,7 @@
   notify:
     - reload systemd
     - restart docker
-  when: http == 1
+  when: worker == 1
   tags:
      - setup
 
@@ -43,3 +43,6 @@
 
 - name: Add 'rtd_user' in the docker group
   user: name={{ rtd_user }} groups=docker append=yes
+  when: worker ==1
+  tags:
+     - setup
