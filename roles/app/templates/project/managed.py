@@ -41,8 +41,6 @@ class CommunityProdSettings(CommunityBaseSettings):
         # Insert our depends above RTD applications, after guaranteed third
         # party package
         apps.insert(apps.index('rest_framework'), 'italia_rtd')
-        # riccardo: HACK, remove extensions while we still have them
-        apps = [a for a in apps if a not in ('django_countries', 'readthedocsext.donate', 'readthedocsext.embed')]
         return apps
 
     # Celery
