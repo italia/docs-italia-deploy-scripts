@@ -63,7 +63,9 @@
   become_user: "{{ rtd_user }}"
   git: repo={{ rtd_repo }} dest={{ rtd_root }} version={{ rtd_branch }} force={{ force }}
   when: app == 1
-  notify: "restart rtd"
+  notify:
+    - restart rtd gunicorn
+    - restart rtd celery
   tags:
      - deploy
 
@@ -199,10 +201,9 @@
   with_items:
     - nginx.conf
     - conf.d/general-configuration.conf
-    - sites-available/readthedocs-dev.conf
-    - sites-available/readthedocs-site.conf
+    - sites-available/readthedocs-main.conf
   notify: reload nginx
-  when: app == 1
+  when: http == 1
   tags:
      - configuration
      - deploy  # this is only temporary
@@ -210,7 +211,7 @@
 - name: disable default  virtualhost
   file: path=/etc/nginx/sites-enabled/default state=absent
   notify: restart nginx
-  when: app == 1
+  when: http == 1
   tags:
      - configuration
      - deploy  # this is only temporary
@@ -221,10 +222,9 @@
 - name: enable virtualhost
   file: src=/etc/nginx/sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} state=link
   with_items:
-    - readthedocs-dev.conf
-    - readthedocs-site.conf
+    - readthedocs-main.conf
   notify: restart nginx
-  when: app == 1
+  when: http == 1
   tags:
      - configuration
      - deploy  # this is only temporary

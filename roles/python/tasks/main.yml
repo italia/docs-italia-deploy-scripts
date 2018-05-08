@@ -33,7 +33,6 @@
     - redis-tools
     - ca-certificates
     - gunicorn
-    - supervisor
   when: python == 1
   tags:
      - setup
