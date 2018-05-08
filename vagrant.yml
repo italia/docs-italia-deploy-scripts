@@ -13,7 +13,7 @@
     - { role: es,  es: 1}
     - { role: python, python: 1 }
     - { role: docker, worker: 1 }
-    - { role: certbot, http: 1, worker: 1 }
+    - { role: certbot, http: 1 }
     - { role: app, app: 1 }
 
   vars:

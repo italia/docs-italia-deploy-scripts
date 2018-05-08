@@ -2,19 +2,19 @@
 ---
 - name: Certbot key
   apt_key: keyserver=keyserver.ubuntu.com id=7BF576066ADA65728FC7E70A8C47BE8E75BCA694 state=present
-  when: worker ==1
+  when: http ==1
   tags:
      - setup
 
 - name: Add Certbot repos
   apt_repository: repo='deb http://ppa.launchpad.net/certbot/certbot/ubuntu {{ ansible_distribution_release }} main' state=present
-  when: worker ==1
+  when: http ==1
   tags:
      - setup
 
 - name: certbot packages
   apt: pkg={{ item }} state=present update_cache=true install_recommends=no
-  when: worker ==1
+  when: http ==1
   with_items:
     - certbot
   tags:
