@@ -26,3 +26,31 @@
   tags:
      - setup
      - configuration
+
+- name: check if dhparam exists
+  stat: path=/etc/ssl/private/dhparam.pem
+  register: dhparam
+  tags:
+     - setup
+     - configuration
+
+- name: check if ocsp cert exists
+  stat: path=/etc/ssl/private/trusted_ocsp_certificate.pem
+  register: trusted_ocsp_certificate
+  tags:
+     - setup
+     - configuration
+
+- name: generate dhparam - it might take a long time
+  command: openssl dhparam -out /etc/ssl/private/dhparam.pem 4096
+  when: not dhparam.stat or not dhparam.stat.exists and http == 1
+  tags:
+     - setup
+     - configuration
+
+- name: download letsencrypt cert
+  command: wget -O /etc/ssl/private/trusted_ocsp_certificate.pem "https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem"
+  when: not trusted_ocsp_certificate.stat or not trusted_ocsp_certificate.stat.exists and http == 1
+  tags:
+     - setup
+     - configuration
