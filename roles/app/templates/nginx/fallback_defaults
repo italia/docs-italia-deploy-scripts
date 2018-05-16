@@ -1,0 +1,5 @@
+try_files $uri $uri/ @fallback;
+error_page 403 404 500 = @fallback;
+add_header X-Subdomain-TryFiles True;
+add_header X-Served Nginx;
+add_header X-Deity docs;
