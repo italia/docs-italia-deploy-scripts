@@ -52,13 +52,6 @@
      - setup
      - deploy
 
-- name: install italia_rtd
-  become_user: "{{ rtd_user }}"
-  git: repo={{ rtd_italia_repo }} dest={{ rtd_italia_root }} version={{ rtd_italia_branch }} force={{ force }}
-  when: app == 1
-  tags:
-     - deploy
-
 - name: install rtd
   become_user: "{{ rtd_user }}"
   git: repo={{ rtd_repo }} dest={{ rtd_root }} version={{ rtd_branch }} force={{ force }}
@@ -102,30 +95,12 @@
   tags:
      - deploy
 
-- name: install italia_rtd in virtualenv
-  become_user: "{{ rtd_user }}"
-  pip:
-    name: "file://{{ rtd_italia_root }}"
-    virtualenv: "{{ rtd_virtualenv }}"
-  when: app == 1
-  tags:
-     - deploy
-
 - name: django configuration
   become_user: "{{ rtd_user }}"
   template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/settings/{{ item }}"
   with_items:
     - managed.py
     - admin.py
-  when: app == 1
-  tags:
-     - deploy
-
-- name: django configuration
-  become_user: "{{ rtd_user }}"
-  template: src=../templates/project/{{ item }} dest="{{ rtd_italia_root }}/italia_rtd/settings_{{ item }}"
-  with_items:
-    - redirect.py
   when: app == 1
   tags:
      - deploy
