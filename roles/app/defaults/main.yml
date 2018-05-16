@@ -13,6 +13,9 @@ rtd_virtualenv: /home/docs/virtualenv
 rtd_root: "{{ rtd_home }}/docs.italia.it"
 rtd_italia_root: "{{ rtd_home }}/italia_rtd"
 rtd_logs: "{{ rtd_home }}/log"
+rtd_app_server: localhost
+rtd_default_version: latest
+rtd_default_language: it
 nginx_logs: /var/log/rtd/nginx
 nginx_user: www-data
 rtd_domain: test.docs.local
@@ -21,8 +24,8 @@ rtd_redis_cache: localhost:6379/0
 rtd_redis_stats: localhost:6379/2
 rtd_proto: http
 DEFAULT_FROM_EMAIL: 'admin@docs.italia.it'
-PUBLIC_API_URL: 'http://dev.test.docs.local'
-PUBLIC_DOMAIN: 'dev.test.docs.local'
-MEDIA_URL: 'http://dev.test.docs.local/media/'
+PUBLIC_API_URL: '{{ rtd_proto }}://{{ rtd_domain }}'
+PUBLIC_DOMAIN: '{{ rtd_domain }}'
+MEDIA_URL: '{{ rtd_proto }}://{{ rtd_domain }}/media/'
 docker_rtd_image: readthedocs/build:2.0
 DEBUG: TRUE

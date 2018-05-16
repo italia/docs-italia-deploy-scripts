@@ -5,7 +5,7 @@ cache_valid_time: 3600
 # comma separated list of hostnames for the different roles
 worker_hosts: 'docs'
 # comma separated list of hostnames for the different roles
-es_hosts: 'docs'
+es_hosts: 'localhost'
 # comma separated list of hostnames for the different roles
 app_hosts: 'docs'
 api_host: 'localhost'
