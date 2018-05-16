@@ -22,6 +22,12 @@ class CommunityProdSettings(CommunityBaseSettings):
     PUBLIC_API_URL = '{{ PUBLIC_API_URL }}'
     PUBLIC_PROTO = '{{ rtd_proto }}'
 
+    # default build versions
+    RTD_LATEST = 'bozza'
+    RTD_LATEST_VERBOSE_NAME = RTD_LATEST
+    RTD_STABLE = 'stabile'
+    RTD_STABLE_VERBOSE_NAME = RTD_STABLE
+
     # General settings
     DEBUG = {{ DEBUG }}
     TEMPLATE_DEBUG = False
