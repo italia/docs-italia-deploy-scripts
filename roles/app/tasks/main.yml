@@ -202,6 +202,8 @@
     - nginx.conf
     - conf.d/general-configuration.conf
     - sites-available/readthedocs-main.conf
+    - fallback_defaults
+    - proxy_defaults
   notify: reload nginx
   when: http == 1
   tags:
