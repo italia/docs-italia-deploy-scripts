@@ -115,7 +115,14 @@ class CommunityProdSettings(CommunityBaseSettings):
     }
 
     # Email
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    if {{ USE_SMTP }}:
+        EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+        EMAIL_USE_TLS = True
+        EMAIL_HOST = '{{ EMAIL_HOST }}'
+        EMAIL_HOST_USER = '{{ EMAIL_HOST_USER }}'
+        EMAIL_HOST_PASSWORD = '{{ EMAIL_HOST_PASSWORD }}'
+    else:
+        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
     # Social Auth
     GITHUB_APP_ID = '{{ GITHUB_APP_ID }}'
