@@ -67,7 +67,7 @@ class CommunityProdSettings(CommunityBaseSettings):
 
     # Docker
     DOCKER_SOCKET = 'tcp://{{ docker_main_ip }}:2375'
-    DOCKER_ENABLE = True
+    DOCKER_ENABLE = {{ DOCKER_ENABLE }}
     DOCKER_IMAGE = '{{ docker_rtd_image }}'
     DOCKER_VERSION = '1.33'
     DOCKER_LIMITS = {

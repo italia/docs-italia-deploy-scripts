@@ -35,3 +35,4 @@
     SLUMBER_PASSWORD: ''
     GITHUB_APP_ID: ''
     GITHUB_API_SECRET: ''
+    DOCKER_ENABLE: False

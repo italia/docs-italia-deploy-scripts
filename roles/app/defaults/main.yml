@@ -28,4 +28,5 @@ PUBLIC_API_URL: '{{ rtd_proto }}://{{ rtd_domain }}'
 PUBLIC_DOMAIN: '{{ rtd_domain }}'
 MEDIA_URL: '{{ rtd_proto }}://{{ rtd_domain }}/media/'
 docker_rtd_image: readthedocs/build:2.0
-DEBUG: TRUE
+DEBUG: True
+DOCKER_ENABLE: True
