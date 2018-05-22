@@ -36,3 +36,7 @@
     GITHUB_APP_ID: ''
     GITHUB_API_SECRET: ''
     DOCKER_ENABLE: False
+    USE_SMTP: False
+    EMAIL_HOST: ''
+    EMAIL_HOST_USER: ''
+    EMAIL_HOST_PASSWORD: ''
