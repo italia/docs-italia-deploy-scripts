@@ -20,6 +20,9 @@ Variables
 
 see individual roles for available variables
 
+Infrastructure variables
+************************
+
 The following global variables (tipically to be defined on the hosts) are available
 
 * http[=1]: Install http server
@@ -37,16 +40,36 @@ Example::
     192.168.93.171 ansible_port=22 ansible_user=user http=1 es=1 python=1 app=1 sql=1 python_version=2.7 worker=1 docker=1 ansible_python_interpreter=/usr/bin/python2
 
 
+Application configuration variables
+***********************************
+
+Some variables are strictly dependent on the running environment, and the defaults provided here **wont't** work.
+
+You will have to override the variables in the ``vagrant.yml`` file or the inventory file.
+
+Safe defaults for a local environment are::
+
+    SLUMBER_USERNAME: ''
+    SLUMBER_PASSWORD: ''
+    GITHUB_APP_ID: ''
+    GITHUB_API_SECRET: ''
+    USE_SMTP: False
+    EMAIL_HOST: ''
+    EMAIL_HOST_USER: ''
+    EMAIL_HOST_PASSWORD: ''
+
+
 Setup
 =====
 
 * Create a virtualenv with requirements installed from ``requirements.txt``
-* Create a host inventory
+* Create a host inventory and provide the **Infrastructure variables provided above**
 * Create a vault file named ``vault`` by running ``ansible-vault create vault``
 * Provide a password to encrypt the vault
-* Add the remote machines password as ``ansible_become_pass: mysudopassword``
+* Add the remote machine password as ``ansible_become_pass: mysudopassword``
 * Create a text file containing the vault password (es: ``vault.txt``)
-* Run the ansible with ``ansible-playbook -i hosts --vault-password-file=vault.txt setup.yml``
+* Override the **Application configuration variables** as described above
+* Run ansible with ``ansible-playbook -i hosts --vault-password-file=vault.txt setup.yml``
 
 
 Available tags
@@ -75,10 +98,12 @@ TODO
 * [ ] Handle or document data needed for a working setup
 * [ ] move italia_rtd to official repo
 * [x] Documentation URL has https hardcoded (from italia_rtd.resolver.ItaliaResolver.resolve)
-* [ ] nginx configuration files cleanup / refactoring
-* [ ] should default variable target a development or production host type?
+* [x] nginx configuration files cleanup / refactoring
+* [x] should default variable target a development or production host type?
+
+    * Development except vaulted secrets
 * [x] move redirect app and some missing python deps in the repos
 * [x] improve variable placement / naming
 * [ ] improve multi server settings
-* [ ] improve how django management commands are run
+* [x] improve how django management commands are run
 * [x] should docker image be pulled during default installation? It's a long process (3GB+ image)
