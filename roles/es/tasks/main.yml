@@ -33,12 +33,6 @@
   tags:
      - setup
 
-- name: pin es version
-  command: apt-mark hold elasticsearch
-  when: es == 1
-  tags:
-     - setup
-
 - name: Enable service elasticsearch
   service: name=elasticsearch enabled=yes state=started
   when: es == 1
