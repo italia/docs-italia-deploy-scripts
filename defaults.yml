@@ -1,4 +1,6 @@
 force: 0
+# pull the build docker image when deploying app
+docker_pull: 1
 # apt cache timing
 cache_valid_time: 3600
 # FIXME: Currently only 'docs' works
