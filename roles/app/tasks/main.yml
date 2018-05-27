@@ -18,6 +18,13 @@
      - setup
      - deploy
 
+- name: add bash_profile for deployment user
+  become_user: "{{ rtd_user }}"
+  template: src=../templates/project/bash_profile dest="{{ rtd_home }}/.bash_profile"
+  when: app == 1
+  tags:
+     - setup
+
 - name: ensure directory structure
   file: path="{{ item }}" state=directory mode=0755 owner={{ nginx_user }}
   with_items:
