@@ -102,7 +102,7 @@ class CommunityProdSettings(CommunityBaseSettings):
 
     # Don't require email verification, but send verification email.
     ACCOUNT_EMAIL_VERIFICATION = 'optional'
-    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
     # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     REPO_LOCK_SECONDS = 300
     DONT_HIT_DB = False
@@ -110,7 +110,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     # Override classes
     CLASS_OVERRIDES = {
         'readthedocs.builds.syncers.Syncer': 'readthedocs.builds.syncers.LocalSyncer',
-        'readthedocs.core.resolver.Resolver': 'italia_rtd.resolver.ItaliaResolver',
+        'readthedocs.core.resolver.Resolver': 'docsitalia.resolver.ItaliaResolver',
         'readthedocs.oauth.services.GitHubService': 'docsitalia.oauth.services.github.DocsItaliaGithubService',
     }
 
@@ -209,7 +209,7 @@ class CommunityProdSettings(CommunityBaseSettings):
         logging = super(CommunityProdSettings, self).LOGGING
         logging['formatters']['syslog'] = {
             'format': 'readthedocs/%(name)s[%(process)d]: %(levelname)s %(message)s [%(name)s:%(lineno)s]',
-            'datefmt' : '%d/%b/%Y %H:%M:%S'
+            'datefmt': '%d/%b/%Y %H:%M:%S'
         }
         logging['handlers']['syslog'] = {
             'level': 'DEBUG',

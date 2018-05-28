@@ -1,7 +1,5 @@
 rtd_repo: https://github.com/italia/docs.italia.it/
-rtd_italia_repo: https://github.com/yakky/italia_rtd/
 rtd_branch: italia-2.3.11
-rtd_italia_branch: redirect
 rtd_home: /home/docs
 rtd_user: docs
 rtd_db_name: docs_italia
