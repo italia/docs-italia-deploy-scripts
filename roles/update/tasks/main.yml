@@ -1,3 +1,8 @@
 ---
 - name: Update packages
   apt: cache_valid_time={{ cache_valid_time }} upgrade=dist autoclean=yes
+
+- name: install requisites
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  with_items:
+    - apt-transport-https
