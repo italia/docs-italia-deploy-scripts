@@ -16,7 +16,7 @@ class CommunityProdSettings(CommunityBaseSettings):
 
     """Settings for local development"""
 
-    PRODUCTION_DOMAIN = 'dashboard.{{ rtd_domain }}'
+    PRODUCTION_DOMAIN = '{{ rtd_domain }}'
     USE_SUBDOMAIN = False
     PUBLIC_DOMAIN = '{{ PUBLIC_DOMAIN }}'
     PUBLIC_API_URL = '{{ PUBLIC_API_URL }}'
