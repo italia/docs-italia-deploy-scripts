@@ -10,7 +10,7 @@ worker_hosts: 'docs'
 es_hosts: 'localhost'
 # comma separated list of hostnames for the different roles
 app_hosts: 'docs'
-api_host: 'localhost'
+api_host: 'localhost:8002'
 db_host: 'localhost'
 
 DEBUG: True
