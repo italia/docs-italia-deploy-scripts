@@ -202,6 +202,7 @@
 
 - name: log dir
   file: path="{{ nginx_logs }}" state=directory owner=www-data group=adm
+  when: http == 1
 
 - name: enable virtualhost
   file: src=/etc/nginx/sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} state=link
@@ -215,7 +216,7 @@
 
 - name: pull docker image ... please wait ... it takes a long time
   command: docker pull "{{ docker_rtd_image }}"
-  when: docker_pull == 1
+  when: docker_pull == 1 and worker == 1
   tags:
      - setup
      - init
