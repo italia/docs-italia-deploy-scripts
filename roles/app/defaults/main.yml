@@ -30,4 +30,3 @@ DEBUG: True
 DOCKER_ENABLE: True
 EMAIL_HOST: smtp.mailgun.org
 USE_SMTP: True
-DEFAULT_PRIVACY_LEVEL: 'private'
