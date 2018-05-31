@@ -110,8 +110,8 @@ class CommunityProdSettings(CommunityBaseSettings):
     # Override classes
     CLASS_OVERRIDES = {
         'readthedocs.builds.syncers.Syncer': 'readthedocs.builds.syncers.LocalSyncer',
-        'readthedocs.core.resolver.Resolver': 'docsitalia.resolver.ItaliaResolver',
-        'readthedocs.oauth.services.GitHubService': 'docsitalia.oauth.services.github.DocsItaliaGithubService',
+        'readthedocs.core.resolver.Resolver': 'readthedocs.docsitalia.resolver.ItaliaResolver',
+        'readthedocs.oauth.services.GitHubService': 'readthedocs.docsitalia.oauth.services.github.DocsItaliaGithubService',
     }
 
     # Email
