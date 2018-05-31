@@ -1,5 +1,5 @@
 rtd_repo: https://github.com/italia/docs.italia.it/
-rtd_branch: italia-2.3.11
+rtd_branch: italia-2.3.13
 rtd_home: /home/docs
 rtd_user: docs
 rtd_db_name: docs_italia
@@ -12,7 +12,7 @@ rtd_root: "{{ rtd_home }}/docs.italia.it"
 rtd_italia_root: "{{ rtd_home }}/italia_rtd"
 rtd_logs: "{{ rtd_home }}/log"
 rtd_app_server: localhost
-rtd_default_version: latest
+rtd_default_version: bozza
 rtd_default_language: it
 nginx_logs: /var/log/rtd/nginx
 nginx_user: www-data
