@@ -94,7 +94,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     # eg: FILE_SINCER = 'readthedocs.builds.syncers.*' (likely RemoteSyncer)
     MULTIPLE_APP_SERVERS = '{{ app_hosts }}'.split(',')
     MULTIPLE_BUILD_SERVERS = '{{ worker_hosts }}'.split(',')
-    SLUMBER_API_HOST = 'http://{{ api_host }}'
+    SLUMBER_API_HOST = '{{ api_host }}'
     SLUMBER_USERNAME = '{{ SLUMBER_USERNAME }}'
     SLUMBER_PASSWORD = '{{ SLUMBER_PASSWORD }}'
     SYNC_USER = '{{ rtd_user }}'
