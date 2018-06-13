@@ -96,7 +96,7 @@ TODO
 ====
 
 * [ ] Handle or document data needed for a working setup
-* [ ] move italia_rtd to official repo
+* [x] move italia_rtd to official repo
 * [x] Documentation URL has https hardcoded (from italia_rtd.resolver.ItaliaResolver.resolve)
 * [x] nginx configuration files cleanup / refactoring
 * [x] should default variable target a development or production host type?
