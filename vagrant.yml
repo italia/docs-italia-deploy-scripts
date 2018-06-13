@@ -31,8 +31,8 @@
     db_pwd: ''
 
     SECRET_KEY: 'somerandomsupersecretkey'
-    SLUMBER_USERNAME: ''
-    SLUMBER_PASSWORD: ''
+    SLUMBER_USERNAME: 'slumber'
+    SLUMBER_PASSWORD: 'slumber'
     GITHUB_APP_ID: ''
     GITHUB_API_SECRET: ''
     DOCKER_ENABLE: False
