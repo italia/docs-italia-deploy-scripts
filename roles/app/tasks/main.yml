@@ -156,7 +156,6 @@
     - rtd_celery_web.service
     - rtd_gunicorn_admin.service
     - rtd_gunicorn_api.service
-    - rtd_gunicorn_redirect.service
     - rtd_gunicorn_web.service
   when: app == 1
   tags:
@@ -171,7 +170,6 @@
     - rtd_celery_web.service
     - rtd_gunicorn_admin.service
     - rtd_gunicorn_api.service
-    - rtd_gunicorn_redirect.service
     - rtd_gunicorn_web.service
   when: app == 1
   tags:
