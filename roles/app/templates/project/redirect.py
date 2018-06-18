@@ -1,1 +1,0 @@
-DOMAIN = "{{ rtd_domain }}"

@@ -9,7 +9,6 @@ rtd_db_pass:
 rtd_db_port: 5432
 rtd_virtualenv: /home/docs/virtualenv
 rtd_root: "{{ rtd_home }}/docs.italia.it"
-rtd_italia_root: "{{ rtd_home }}/italia_rtd"
 rtd_logs: "{{ rtd_home }}/log"
 rtd_app_server: localhost
 rtd_default_version: bozza

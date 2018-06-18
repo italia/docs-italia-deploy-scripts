@@ -41,14 +41,6 @@ class CommunityProdSettings(CommunityBaseSettings):
     # riccardo: need this atm
     #ALLOW_ADMIN = False
 
-    @property
-    def INSTALLED_APPS(self):  # noqa
-        apps = super(CommunityProdSettings, self).INSTALLED_APPS
-        # Insert our depends above RTD applications, after guaranteed third
-        # party package
-        apps.insert(apps.index('rest_framework'), 'italia_rtd')
-        return apps
-
     # Celery
     CACHES = dict(
         (cache_name, {
