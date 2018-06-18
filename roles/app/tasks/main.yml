@@ -96,9 +96,19 @@
     virtualenv: "{{ rtd_virtualenv }}"
   with_items:
     - django-restricted-sessions
-    - "Flask==0.10.0"
     - "setuptools>=33"
   when: app == 1
+  tags:
+     - deploy
+
+- name: install additional requirements in virtualenv
+  become_user: "{{ rtd_user }}"
+  pip:
+    name: "{{ item }}"
+    virtualenv: "{{ rtd_virtualenv }}"
+  with_items:
+    - "https://github.com/italia/docs-italia-convertitore-web/archive/master.zip"
+  when: app == 1 and converter == 1
   tags:
      - deploy
 

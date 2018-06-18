@@ -17,4 +17,5 @@
     - { role: python }
     - { role: docker }
     - { role: certbot }
+    - { role: pandoc-filters }
     - { role: app }
