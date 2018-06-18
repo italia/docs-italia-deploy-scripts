@@ -17,14 +17,15 @@ rtd_default_language: it
 nginx_logs: /var/log/rtd/nginx
 nginx_user: www-data
 rtd_domain: test.docs.local
+rtd_baseurl: test.docs.local
 rtd_redis_celery: localhost:6379/1
 rtd_redis_cache: localhost:6379/0
 rtd_redis_stats: localhost:6379/2
 rtd_proto: http
 DEFAULT_FROM_EMAIL: 'admin@docs.italia.it'
-PUBLIC_API_URL: '{{ rtd_proto }}://{{ rtd_domain }}'
+PUBLIC_API_URL: '{{ rtd_proto }}://{{ rtd_baseurl }}'
 PUBLIC_DOMAIN: '{{ rtd_domain }}'
-MEDIA_URL: '{{ rtd_proto }}://{{ rtd_domain }}/media/'
+MEDIA_URL: '{{ rtd_proto }}://{{ rtd_baseurl }}/media/'
 docker_rtd_image: readthedocs/build:2.0
 DEBUG: True
 DOCKER_ENABLE: True
