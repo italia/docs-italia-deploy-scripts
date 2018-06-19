@@ -167,6 +167,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     ALLOWED_HOSTS = ['*']
     USER_MATURITY_DAYS = 14
     READTHEDOCSEXT_MONITORING_CACHE = 'stats'
+    DEFAULT_PRIVACY_LEVEL = '{{ DEFAULT_PRIVACY_LEVEL }}'
 
     @property
     def TEXTCLASSIFIER_DATA_FILE(self):
