@@ -23,13 +23,14 @@ see individual roles for available variables
 Infrastructure variables
 ************************
 
-The following global variables (tipically to be defined on the hosts) are available
+The following global variables (typically to be defined on the hosts) are available
 
 * http[=1]: Install http server
 * es[=1]: Install Elasticsearch server
 * python[=1]: Install python environment
 * app[=1]: Install rtd
 * sql[=1]: Install postgres
+* converter[=1]: Install docx/odt -> RST converter
 * python_version=2.7|[3.x]: Python version to be used to run rtd
 * worker[=1]: Install worker-related packages (docker)
 * ansible_python_interpreter[=/usr/bin/python3]: Path to python interpreter on remote
@@ -81,6 +82,7 @@ Available tags
     * postgres
     * python interpreter
     * docker
+    * pandoc / converter commands
 
 * init: data initialization
     * pull docker image
@@ -90,6 +92,18 @@ Available tags
 
 * deploy: application deployment
     * django projects deployment
+
+* deploy_pandoc: update converter commands
+
+
+pandoc / converter
+==================
+
+Optionally this playbook can install docx/odt -> RST converter platform
+
+It is installed as a application under the main main project and is available on the ``/converter`` URL
+
+**Be aware that installing this will require ~= 6GB of storage and 1h of time (depending on VM connection speed and CPU power)**
 
 ====
 TODO
@@ -101,7 +115,7 @@ TODO
 * [x] nginx configuration files cleanup / refactoring
 * [x] should default variable target a development or production host type?
 
-    * Development except vaulted secrets
+* Development except vaulted secrets
 * [x] move redirect app and some missing python deps in the repos
 * [x] improve variable placement / naming
 * [ ] improve multi server settings

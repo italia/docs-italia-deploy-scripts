@@ -1,0 +1,8 @@
+pandoc_home: /home/docs
+pandoc_root: "{{ pandoc_home }}/pandoc"
+pandoc_repo: https://github.com/italia/docs-italia-comandi-conversione
+pandoc_branch: master
+pandoc_filters_repo: https://github.com/italia/docs-italia-pandoc-filters
+pandoc_filters_branch: master
+pandoc_user: docs
+pandoc_cleanup: 0
