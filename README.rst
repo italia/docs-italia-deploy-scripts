@@ -60,6 +60,28 @@ Safe defaults for a local environment are::
     EMAIL_HOST_PASSWORD: ''
 
 
+An example inventory file may look like this::
+
+    hosts:
+      hosts:
+        192.168.93.170 python=1 app=1 http=1
+        192.168.93.171 python=1 worker=1 docker=1
+        192.168.93.172 es=1
+        192.168.93.173 sql=1
+
+      vars:
+        SECRET_KEY: 'somerandomsupersecretkey'
+        SLUMBER_USERNAME: 'slumber'
+        SLUMBER_PASSWORD: 'slumber'
+        GITHUB_APP_ID: ''
+        GITHUB_API_SECRET: ''
+        DOCKER_ENABLE: False
+        USE_SMTP: False
+        EMAIL_HOST: ''
+        EMAIL_HOST_USER: ''
+        EMAIL_HOST_PASSWORD: ''
+
+
 Setup
 =====
 
