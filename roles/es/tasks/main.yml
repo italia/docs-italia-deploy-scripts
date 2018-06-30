@@ -26,7 +26,7 @@
      - setup
 
 - name: ES packages
-  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no force=yes
   when: es == 1
   with_items:
     - elasticsearch={{ es_version }}
