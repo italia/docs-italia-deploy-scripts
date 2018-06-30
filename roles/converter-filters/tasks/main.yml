@@ -8,7 +8,7 @@
     url: https://github.com/commercialhaskell/stack/releases/download/v1.7.1/stack-1.7.1-linux-x86_64.tar.gz
     dest: /tmp/stack-1.7.1-linux-x86_64.tar.gz
     mode: 0660
-  when: converter == 1 and not stack.stat.exists
+  when: converter == 1 and not stack.stat.exists and converter_build == 1
   tags:
      - setup
 
@@ -18,7 +18,7 @@
     dest: /tmp
     remote_src: yes
     exclude: doc,LICENSE
-  when: converter == 1 and not stack.stat.exists
+  when: converter == 1 and not stack.stat.exists and converter_build == 1
   tags:
      - setup
 
@@ -28,7 +28,7 @@
     dest: /usr/local/bin
     mode: 0755
     remote_src: yes
-  when: converter == 1 and not stack.stat.exists
+  when: converter == 1 and not stack.stat.exists and converter_build == 1
   tags:
      - setup
 
@@ -42,7 +42,7 @@
 
 - name: setup checkout path
   file: path="{{ converter_checkout_path }}" owner="{{ converter_user }}" state=directory
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
@@ -50,7 +50,7 @@
 - name: clone converter
   become_user: "{{ converter_user }}"
   git: repo={{ converter_repo }} dest="{{ converter_checkout_path }}/docs-italia-comandi-conversione" version={{ converter_branch }} force={{ force }}
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
@@ -58,7 +58,7 @@
 - name: clone filters
   become_user: "{{ converter_user }}"
   git: repo={{ converter_filters_repo }} dest="{{ converter_checkout_path }}/docs-italia-converter-filters" version={{ converter_filters_branch }} force={{ force }}
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
@@ -66,7 +66,7 @@
 - name: build conversion commands - expect a **long wait** before it's ready
   become_user: "{{ converter_user }}"
   command: chdir="{{ converter_checkout_path }}/docs-italia-comandi-conversione" stack build
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
@@ -74,7 +74,7 @@
 - name: build converter_filters
   become_user: "{{ converter_user }}"
   command: chdir="{{ converter_checkout_path }}/docs-italia-converter-filters" stack build
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
@@ -82,7 +82,7 @@
 - name: local install conversion commands - expect a **long wait** before it's ready
   become_user: "{{ converter_user }}"
   command: chdir="{{ converter_checkout_path }}/docs-italia-comandi-conversione" stack install
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
@@ -90,7 +90,7 @@
 - name: local install converter_filters
   become_user: "{{ converter_user }}"
   command: chdir="{{ converter_checkout_path }}/docs-italia-converter-filters" stack install
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
@@ -110,6 +110,27 @@
      - deploy_converter
      - setup
 
+- name: download pre-built packages
+  get_url:
+    url: "{{ converter_binary_url }}"
+    dest: "{{ converter_checkout_path }}/{{ converter_binary_archive }}"
+    remote_src: yes
+    force: "{{ force }}"
+  when: converter == 1 and converter_build == 0
+  tags:
+     - deploy_converter
+     - setup
+
+- name: install pre-built packages
+  unarchive:
+    src: "{{ converter_checkout_path }}/{{ converter_binary_archive }}"
+    dest: /usr/local/bin
+    remote_src: yes
+  when: converter == 1 and converter_build == 0
+  tags:
+     - deploy_converter
+     - setup
+
 - name: local install filters / commands
   copy: dest="/usr/local/bin/{{ item }}" src="{{ converter_home }}/.local/bin/{{ item }}" mode=0755 remote_src=yes
   with_items:
@@ -122,7 +143,7 @@
     - pandoc
     - pandoc-font-to-style
     - pandoc-to-sphinx
-  when: converter == 1
+  when: converter == 1 and converter_build == 1
   tags:
      - deploy_converter
      - setup
