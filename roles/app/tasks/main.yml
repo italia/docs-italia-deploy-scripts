@@ -107,7 +107,7 @@
     name: "{{ item }}"
     virtualenv: "{{ rtd_virtualenv }}"
   with_items:
-    - "https://github.com/italia/docs-italia-convertitore-web/archive/master.zip"
+    - "{{ converter_app_repo }}/{{ converter_app_branch }}.zip"
   when: app == 1 and converter == 1
   tags:
      - deploy
