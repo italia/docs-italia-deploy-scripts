@@ -40,46 +40,59 @@
   tags:
      - setup
 
-- name: clone pandoc
-  git: repo={{ pandoc_repo }} dest="/usr/src/docs-italia-comandi-conversione" version={{ pandoc_branch }} force={{ force }}
+- name: setup checkout path
+  file: path="{{ converter_checkout_path }}" owner="{{ converter_user }}" state=directory
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
+     - setup
+
+- name: clone converter
+  become_user: "{{ converter_user }}"
+  git: repo={{ converter_repo }} dest="{{ converter_checkout_path }}/docs-italia-comandi-conversione" version={{ converter_branch }} force={{ force }}
+  when: converter == 1
+  tags:
+     - deploy_converter
      - setup
 
 - name: clone filters
-  git: repo={{ pandoc_filters_repo }} dest="/usr/src/docs-italia-pandoc-filters" version={{ pandoc_filters_branch }} force={{ force }}
+  become_user: "{{ converter_user }}"
+  git: repo={{ converter_filters_repo }} dest="{{ converter_checkout_path }}/docs-italia-converter-filters" version={{ converter_filters_branch }} force={{ force }}
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
 
 - name: build conversion commands - expect a **long wait** before it's ready
-  command: chdir="/usr/src/docs-italia-comandi-conversione" stack build
+  become_user: "{{ converter_user }}"
+  command: chdir="{{ converter_checkout_path }}/docs-italia-comandi-conversione" stack build
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
 
-- name: build pandoc_filters
-  command: chdir="/usr/src/docs-italia-pandoc-filters" stack build
+- name: build converter_filters
+  become_user: "{{ converter_user }}"
+  command: chdir="{{ converter_checkout_path }}/docs-italia-converter-filters" stack build
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
 
 - name: local install conversion commands - expect a **long wait** before it's ready
-  command: chdir="/usr/src/docs-italia-comandi-conversione" stack install
+  become_user: "{{ converter_user }}"
+  command: chdir="{{ converter_checkout_path }}/docs-italia-comandi-conversione" stack install
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
 
-- name: local install pandoc_filters
-  command: chdir="/usr/src/docs-italia-pandoc-filters" stack install
+- name: local install converter_filters
+  become_user: "{{ converter_user }}"
+  command: chdir="{{ converter_checkout_path }}/docs-italia-converter-filters" stack install
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
 
 - name: remove existing commands
@@ -88,21 +101,17 @@
     state: absent
   with_items:
     - converti
-    - filtro-acronimi
-    - filtro-didascalia
-    - filtro-quotes
-    - filtro-rimuovi-div
-    - filtro-stile-liste
+    - filtro-*
     - pandoc
     - pandoc-font-to-style
     - pandoc-to-sphinx
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
 
 - name: local install filters / commands
-  copy: dest="/usr/local/bin/{{ item }}" src="/root/.local/bin/{{ item }}" mode=0755 remote_src=yes
+  copy: dest="/usr/local/bin/{{ item }}" src="{{ converter_home }}/.local/bin/{{ item }}" mode=0755 remote_src=yes
   with_items:
     - converti
     - filtro-acronimi
@@ -115,14 +124,14 @@
     - pandoc-to-sphinx
   when: converter == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
 
 - name: cleanup build files
   file:
-    path: /root/.stack
+    path: "{{ converter_home }}/.stack"
     state: absent
-  when: converter == 1 and pandoc_cleanup == 1
+  when: converter == 1 and converter_cleanup == 1
   tags:
-     - deploy_pandoc
+     - deploy_converter
      - setup
