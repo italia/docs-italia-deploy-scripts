@@ -1,0 +1,11 @@
+converter_user: docs
+converter_home: /home/docs
+converter_checkout_path: "/usr/src/converter"
+converter_repo: https://github.com/italia/docs-italia-comandi-conversione
+converter_branch: master
+converter_filters_repo: https://github.com/italia/docs-italia-pandoc-filters
+converter_filters_branch: master
+converter_cleanup: 0
+converter_build: 0
+converter_binary_url: https://github.com/italia/docs-italia-comandi-conversione/releases/download/v0.2.2/comandi-conversione.zip
+converter_binary_archive: comandi-conversione.zip
