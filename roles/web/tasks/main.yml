@@ -10,3 +10,4 @@
   when: http == 1
   tags:
     - setup
+  ignore_errors: yes
