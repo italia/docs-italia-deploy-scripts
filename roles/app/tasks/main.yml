@@ -106,8 +106,9 @@
   pip:
     name: "{{ item }}"
     virtualenv: "{{ rtd_virtualenv }}"
+    editable: 1
   with_items:
-    - "https://github.com/italia/docs-italia-convertitore-web/archive/master.zip"
+    - "{{ converter_app_repo }}@{{ converter_app_branch }}#egg=docs_italia_convertitore_web"
   when: app == 1 and converter == 1
   tags:
      - deploy
