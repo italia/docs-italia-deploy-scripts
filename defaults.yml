@@ -12,6 +12,8 @@ es_hosts: 'localhost'
 app_hosts: 'docs'
 api_host: 'localhost:8002'
 db_host: 'localhost'
+ansible_python_interpreter: /usr/bin/python2
+converter: 0
 
 DEBUG: True
 db_pwd: !vault |
