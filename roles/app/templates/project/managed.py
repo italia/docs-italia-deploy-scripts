@@ -46,8 +46,10 @@ class CommunityProdSettings(CommunityBaseSettings):
         apps = super(CommunityProdSettings, self).INSTALLED_APPS
         # Insert our depends above RTD applications, after guaranteed third
         # party package
-        if {{ USE_CONVERTER }}:
-            apps.insert(apps.index('rest_framework'), 'docs_italia_convertitore_web')
+        {% if USE_CONVERTER %}apps.insert(apps.index('rest_framework'), 'docs_italia_convertitore_web'){% endif %}
+
+        {% if SENTRY_DSN|string|length %}apps.insert(apps.index('rest_framework'), 'raven.contrib.django.raven_compat'){% endif %}
+
         return apps
 
     # Celery
@@ -75,6 +77,14 @@ class CommunityProdSettings(CommunityBaseSettings):
         'memory': '999m',
         'time': 3600,
     }
+    {% if SENTRY_DSN|string|length  %}
+
+    import raven
+    RAVEN_CONFIG = {
+        'dsn': '{{ SENTRY_DSN }}',
+        'release': raven.fetch_git_sha(CommunityBaseSettings.SITE_ROOT)
+    }
+    {% endif %}
 
     # Haystack - we don't really use it. ES API is used instead
     HAYSTACK_CONNECTIONS = {

@@ -1,3 +1,4 @@
+converter: 0
 converter_user: docs
 converter_home: /home/docs
 converter_checkout_path: "/usr/src/converter"

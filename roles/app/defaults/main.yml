@@ -32,5 +32,7 @@ EMAIL_HOST: smtp.mailgun.org
 USE_SMTP: True
 DEFAULT_PRIVACY_LEVEL: 'private'
 USE_CONVERTER: "{{ converter }}"
+converter: 0
 converter_app_repo: git+https://github.com/italia/docs-italia-convertitore-web
 converter_app_branch: master
+SENTRY_DSN:
