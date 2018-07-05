@@ -11,7 +11,7 @@
      - setup
 
 - name: docker packages
-  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no force=1
   when: worker == 1
   with_items:
     - docker-ce={{ docker_version }}
