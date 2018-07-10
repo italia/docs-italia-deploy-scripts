@@ -101,6 +101,17 @@
   tags:
      - deploy
 
+- name: install sentry dependency
+  become_user: "{{ rtd_user }}"
+  pip:
+    name: "{{ item }}"
+    virtualenv: "{{ rtd_virtualenv }}"
+  with_items:
+    - "raven>=6.9"
+  when: app == 1 and SENTRY_DSN
+  tags:
+     - deploy
+
 - name: install additional requirements in virtualenv
   become_user: "{{ rtd_user }}"
   pip:
