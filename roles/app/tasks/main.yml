@@ -141,12 +141,22 @@
   tags:
      - deploy
 
-- name: create slumber api consumer django user with proper permissions
+- name: check if slumber api consumer django user exists
+  become_user: "{{ rtd_user }}"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings=readthedocs.settings.managed | grep True"
+  args:
+    stdin: "from django.contrib.auth.models import User; User.objects.filter(username='{{ SLUMBER_USERNAME }}').exists()"
+  register: build_user_available
+  ignore_errors: yes
+  tags:
+     - deploy
+
+- name: create slumber api consumer django user with proper permissions if not available
   become_user: "{{ rtd_user }}"
   command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings=readthedocs.settings.managed"
   args:
     stdin: "from django.contrib.auth.models import User, Permission; u = User.objects.create_user('{{ SLUMBER_USERNAME }}', password='{{ SLUMBER_PASSWORD }}', is_staff=True); p = Permission.objects.get(codename='view_project', content_type__app_label='projects'); u.user_permissions.add(p)"
-  when: app == 1
+  when: app == 1 and build_user_available.rc == 1
   tags:
      - deploy
 
