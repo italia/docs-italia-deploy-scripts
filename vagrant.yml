@@ -28,8 +28,6 @@
     es_hosts: 'localhost'
     app_hosts: 'localhost'
     api_host: 'localhost'
-    db_host: ''
-    db_pwd: ''
 
     SECRET_KEY: 'somerandomsupersecretkey'
     SLUMBER_USERNAME: 'slumber'
