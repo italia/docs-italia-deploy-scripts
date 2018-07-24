@@ -114,7 +114,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     # Don't require email verification, but send verification email.
     ACCOUNT_EMAIL_VERIFICATION = 'optional'
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-    # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     REPO_LOCK_SECONDS = 300
     DONT_HIT_DB = False
 
