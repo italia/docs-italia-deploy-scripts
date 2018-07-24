@@ -129,12 +129,28 @@
      - deploy_converter
      - setup
 
+- debug:
+    msg: "commands urls {{ converter_binary_url }}/{{ item }}"
+  with_items:
+    - 2224702/converti.zip
+    - 2224703/pandoc.zip
+    - 2224704/pandoc-font-to-style.zip
+    - 2224705/pandoc-to-sphinx.zip
+  when: converter == 1 and converter_build == 0
+  tags:
+     - deploy_converter
+
 - name: download pre-built commands
   get_url:
-    url: "{{ converter_binary_url }}"
-    dest: "{{ converter_checkout_path }}/{{ converter_binary_archive }}"
+    url: "{{ converter_binary_url }}/{{ item }}"
+    dest: "{{ converter_checkout_path }}/{{ item[8:] }}"
     remote_src: yes
     force: "{{ force }}"
+  with_items:
+    - 2224702/converti.zip
+    - 2224703/pandoc.zip
+    - 2224704/pandoc-font-to-style.zip
+    - 2224705/pandoc-to-sphinx.zip
   when: converter == 1 and converter_build == 0
   tags:
      - deploy_converter
@@ -142,9 +158,14 @@
 
 - name: install pre-built commands
   unarchive:
-    src: "{{ converter_checkout_path }}/{{ converter_binary_archive }}"
+    src: "{{ converter_checkout_path }}/{{ item }}"
     dest: /usr/local/bin
     remote_src: yes
+  with_items:
+    - converti.zip
+    - pandoc.zip
+    - pandoc-font-to-style.zip
+    - pandoc-to-sphinx.zip
   when: converter == 1 and converter_build == 0
   tags:
      - deploy_converter
