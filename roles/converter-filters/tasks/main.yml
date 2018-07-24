@@ -37,6 +37,7 @@
   with_items:
     - libgmp3-dev
     - unzip
+    - libc6-i386
   when: converter == 1
   tags:
      - deploy_converter
@@ -156,6 +157,15 @@
      - deploy_converter
      - setup
 
+- name: download linker normattiva
+  get_url:
+    url: "{{ normattiva_url }}"
+    dest: "{{ converter_checkout_path }}/normattiva.zip"
+  when: converter == 1 and converter_build == 0
+  tags:
+     - deploy_converter
+     - setup
+
 - name: install pre-built commands
   unarchive:
     src: "{{ converter_checkout_path }}/{{ item }}"
@@ -166,6 +176,7 @@
     - pandoc.zip
     - pandoc-font-to-style.zip
     - pandoc-to-sphinx.zip
+    - normattiva.zip
   when: converter == 1 and converter_build == 0
   tags:
      - deploy_converter

@@ -10,3 +10,4 @@ converter_cleanup: 0
 converter_build: 0
 converter_binary_url: https://github.com/italia/docs-italia-comandi-conversione/files
 converter_binary_filters_url: https://github.com/italia/docs-italia-pandoc-filters/releases/download/v0.1.2
+normattiva_url: http://www.ittig.cnr.it/?wpdmdl=2308
