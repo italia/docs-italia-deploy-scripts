@@ -38,8 +38,6 @@ class CommunityProdSettings(CommunityBaseSettings):
     SECRET_KEY = '{{ SECRET_KEY }}'
     DEFAULT_FROM_EMAIL = '{{ DEFAULT_FROM_EMAIL }}'
     SESSION_COOKIE_DOMAIN = '{{ rtd_domain }}'
-    # riccardo: need this atm
-    #ALLOW_ADMIN = False
 
     @property
     def INSTALLED_APPS(self):  # noqa
