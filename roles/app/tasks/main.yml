@@ -129,7 +129,6 @@
   template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/settings/{{ item }}"
   with_items:
     - managed.py
-    - admin.py
   when: app == 1
   tags:
      - deploy
@@ -195,7 +194,6 @@
     - rtd_celery_build.service
     - rtd_celery_docs.service
     - rtd_celery_web.service
-    - rtd_gunicorn_admin.service
     - rtd_gunicorn_api.service
     - rtd_gunicorn_web.service
   when: app == 1
@@ -209,7 +207,6 @@
     - rtd_celery_build.service
     - rtd_celery_docs.service
     - rtd_celery_web.service
-    - rtd_gunicorn_admin.service
     - rtd_gunicorn_api.service
     - rtd_gunicorn_web.service
   when: app == 1
