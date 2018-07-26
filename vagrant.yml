@@ -29,6 +29,7 @@
     app_hosts: 'localhost'
     api_host: 'localhost'
 
+    GLOBAL_ANALYTICS_CODE:
     SECRET_KEY: 'somerandomsupersecretkey'
     SLUMBER_USERNAME: 'slumber'
     SLUMBER_PASSWORD: 'slumber'
