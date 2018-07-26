@@ -21,6 +21,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     PUBLIC_DOMAIN = '{{ PUBLIC_DOMAIN }}'
     PUBLIC_API_URL = '{{ PUBLIC_API_URL }}'
     PUBLIC_PROTO = '{{ rtd_proto }}'
+    GLOBAL_ANALYTICS_CODE = '{{ GLOBAL_ANALYTICS_CODE }}'
 
     # default build versions
     RTD_LATEST = 'bozza'
