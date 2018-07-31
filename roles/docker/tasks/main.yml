@@ -28,15 +28,18 @@
 
 - name: Override systemd configuration
   template: src=docker.service dest=/etc/systemd/system/docker.service mode=0644
-  notify:
-    - reload systemd
-    - restart docker
+  when: worker == 1
+  tags:
+     - setup
+
+- name: Reload systemd configuration
+  command: systemctl daemon-reload
   when: worker == 1
   tags:
      - setup
 
 - name: Enable service docker
-  service: name=docker enabled=yes state=started
+  service: name=docker enabled=yes state=restarted
   when: worker == 1
   tags:
      - setup
