@@ -166,6 +166,13 @@
   tags:
      - deploy
 
+- name: run provision_elasticsearch command
+  become_user: "{{ rtd_user }}"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py provision_elasticsearch --settings=readthedocs.settings.managed"
+  when: app == 1
+  tags:
+     - setup
+
 - name: systemd environment
   template: src=../templates/systemd/{{ item }}  dest="{{ rtd_home}}/{{ item }}" mode=644
   with_items:
