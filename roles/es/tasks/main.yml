@@ -33,8 +33,14 @@
   tags:
      - setup
 
+- name: Install ES plugin
+  command: /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
+  when: es == 1
+  tags:
+     - setup
+
 - name: Enable service elasticsearch
-  service: name=elasticsearch enabled=yes state=started
+  service: name=elasticsearch enabled=yes state=restarted
   when: es == 1
   tags:
      - setup
