@@ -39,6 +39,8 @@ The following global variables (typically to be defined on the hosts) are availa
 Example::
 
     192.168.93.171 ansible_port=22 ansible_user=user http=1 es=1 python=1 app=1 sql=1 python_version=2.7 worker=1 docker=1 ansible_python_interpreter=/usr/bin/python2
+    192.168.93.171 ansible_port=22 ansible_user=ubuntu http=1 es=1 python=1 app=1 sql=1 python_version=3.6 worker=1 docker=1 ansible_python_interpreter=/usr/bin/python3 rtd_domain=my.domain.it rtd_baseurl=my.domain.it rtd_proto=http converter=1 converter_branch=master docker_version=18.06.0~ce~3-0~ubuntu
+
 
 
 Application configuration variables
@@ -94,6 +96,23 @@ Setup
 * Override the **Application configuration variables** as described above
 * Run ansible with ``ansible-playbook -i hosts --vault-password-file=vault.txt setup.yml``
 
+
+Roles order
+===========
+
+If you want to create a custom playbook, take into accounts the **strict** roles dependencies:
+
+* ``app`` depends on:
+
+  * ``web``
+  * ``sql``
+  * ``es``
+  * ``python``
+  * ``docker``
+
+* ``certbot`` depends on:
+
+  * ``web``
 
 Available tags
 ==============
