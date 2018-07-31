@@ -33,9 +33,16 @@
   tags:
      - setup
 
+- name: Check ES plugin
+  command: /usr/share/elasticsearch/bin/elasticsearch-plugin list
+  when: es == 1
+  register: es_plugins
+  tags:
+     - setup
+
 - name: Install ES plugin
   command: /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
-  when: es == 1
+  when: es == 1 and 'analysis-icu' not in es_plugins.stdout_lines
   tags:
      - setup
 
