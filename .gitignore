@@ -4,3 +4,4 @@ hosts
 *.log
 *.retry
 vault*
+utils
