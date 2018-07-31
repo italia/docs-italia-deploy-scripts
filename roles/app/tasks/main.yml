@@ -169,6 +169,7 @@
 - name: run provision_elasticsearch command
   become_user: "{{ rtd_user }}"
   command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py provision_elasticsearch --settings=readthedocs.settings.managed"
+  ignore_errors: yes
   when: app == 1
   tags:
      - setup
