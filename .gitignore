@@ -5,3 +5,4 @@ hosts
 *.retry
 vault*
 utils
+cluster*

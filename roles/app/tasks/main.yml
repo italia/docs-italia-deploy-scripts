@@ -11,9 +11,16 @@
   tags:
      - setup
 
+- name: check deployment group
+  user: name={{ rtd_user }} state=present
+  when: app == 1 or worker == 1
+  tags:
+     - setup
+     - deploy
+
 - name: check deployment user
   user: name={{ rtd_user }} state=present home={{ rtd_home }} uid=1005 group={{ rtd_user }} shell=/bin/bash
-  when: app == 1
+  when: app == 1 or worker == 1
   tags:
      - setup
      - deploy
@@ -21,7 +28,7 @@
 - name: add bash_profile for deployment user
   become_user: "{{ rtd_user }}"
   template: src=../templates/project/bash_profile dest="{{ rtd_home }}/.bash_profile"
-  when: app == 1
+  when: app == 1 or worker == 1
   tags:
      - setup
 
@@ -45,8 +52,8 @@
 
 - name: check postgres user
   become_user: "postgres"
-  postgresql_user: name={{ rtd_db_user }}
-  when: app == 1
+  postgresql_user: name={{ rtd_db_user }} password={{ rtd_db_pass }}
+  when: sql == 1
   tags:
      - setup
      - deploy
@@ -54,7 +61,7 @@
 - name: check docs.italia.it db
   become_user: "postgres"
   postgresql_db: name={{ rtd_db_name }} owner={{ rtd_db_user }}
-  when: app == 1
+  when: sql == 1
   tags:
      - setup
      - deploy
@@ -148,6 +155,7 @@
     stdin: "from django.contrib.auth.models import User; User.objects.filter(username='{{ SLUMBER_USERNAME }}').exists()"
   register: build_user_available
   ignore_errors: yes
+  when: app == 1
   tags:
      - deploy
 
@@ -258,11 +266,3 @@
   tags:
      - configuration
      - deploy  # this is only temporary
-
-- name: pull docker image ... please wait ... it takes a long time
-  command: docker pull "{{ docker_rtd_image }}"
-  when: docker_pull == 1 and worker == 1
-  tags:
-     - setup
-     - init
-

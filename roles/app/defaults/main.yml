@@ -36,3 +36,9 @@ converter: 0
 converter_app_repo: git+https://github.com/italia/docs-italia-convertitore-web
 converter_app_branch: master
 SENTRY_DSN:
+api_host: 'localhost:8002'
+
+# comma separated list of hostnames
+es_hosts: 'localhost'
+app_hosts: 'docs'
+worker_hosts: 'docs'
