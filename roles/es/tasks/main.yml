@@ -46,6 +46,24 @@
   tags:
      - setup
 
+- name: Configure ES - 1
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    line: "cluster.name: docsitalia"
+  when: es == 1 and es_hosts != 'localhost'
+  tags:
+     - setup
+
+- name: Configure ES - 2
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    line: "network.host: {{ ansible_default_ipv4.address }}"
+  when: es == 1 and es_hosts != 'localhost'
+  tags:
+     - setup
+
 - name: Enable service elasticsearch
   service: name=elasticsearch enabled=yes state=restarted
   when: es == 1

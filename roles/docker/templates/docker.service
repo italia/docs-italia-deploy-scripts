@@ -10,7 +10,7 @@ Type=notify
 # the default is not to use systemd for cgroups because the delegate issues still
 # exists and systemd currently does not support the cgroup feature set required
 # for containers run by docker
-ExecStart=/usr/bin/dockerd --mtu=1400 -H fd:// -H tcp://127.0.0.1:2375
+ExecStart=/usr/bin/dockerd --mtu=1400 -H fd:// -H tcp://{{ docker_main_ip }}:2375
 ExecReload=/bin/kill -s HUP $MAINPID
 LimitNOFILE=1048576
 # Having non-zero Limit*s causes performance problems due to accounting overhead

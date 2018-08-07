@@ -6,7 +6,6 @@
 
   vars_files:
     - defaults.yml
-    - vault
 
   roles:
     - { role: update }
@@ -15,7 +14,7 @@
     - { role: sql }
     - { role: es }
     - { role: python }
-    - { role: docker }
     - { role: certbot }
-    - { role: converter-filters }
     - { role: app }
+    - { role: converter-filters }
+    - { role: docker }

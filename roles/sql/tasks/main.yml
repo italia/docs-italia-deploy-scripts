@@ -20,3 +20,29 @@
   when: sql == 1
   tags:
      - setup
+
+- name: enable postgres network
+  replace:
+    path: /etc/postgresql/{{ postgres_version }}/main/postgresql.conf
+    regexp: "#listen_addresses = 'localhost'"
+    replace: "listen_addresses = '{{ rtd_db_host }}'"
+  when: sql == 1 and rtd_db_host != 'localhost'
+  tags:
+     - setup
+
+- debug: msg="IP {{ rtd_db_host| ipsubnet(24, 0) }}|{{ rtd_db_host }}"
+
+- name: enable postgres network / pg_hba
+  lineinfile:
+    path: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
+    state: present
+    line: "host      all      all      {{ rtd_db_host| ipsubnet(24, 0) }}      md5"
+  when: sql == 1 and rtd_db_host != 'localhost'
+  tags:
+     - setup
+
+- name: systemd enable
+  systemd: name="postgresql" state=restarted enabled=True daemon_reload=yes
+  when: sql == 1
+  tags:
+     - setup
