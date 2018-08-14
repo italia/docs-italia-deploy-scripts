@@ -110,8 +110,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     SYNC_USER = '{{ rtd_user }}'
     #DOCROOT = '/var/build'
 
-    # Don't require email verification, but send verification email.
-    ACCOUNT_EMAIL_VERIFICATION = 'optional'
+    ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     REPO_LOCK_SECONDS = 300
