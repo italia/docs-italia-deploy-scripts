@@ -159,12 +159,21 @@
   tags:
      - deploy
 
-- name: create slumber api consumer django user with proper permissions if not available
+- name: create slumber api consumer django user if not available
   become_user: "{{ rtd_user }}"
   command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings=readthedocs.settings.managed"
   args:
-    stdin: "from django.contrib.auth.models import User, Permission; u = User.objects.create_user('{{ SLUMBER_USERNAME }}', password='{{ SLUMBER_PASSWORD }}', is_staff=True); p = Permission.objects.get(codename='view_project', content_type__app_label='projects'); u.user_permissions.add(p)"
+    stdin: "from django.contrib.auth.models import User; User.objects.create_user('{{ SLUMBER_USERNAME }}', password='{{ SLUMBER_PASSWORD }}', is_staff=True);"
   when: app == 1 and 'False' in build_user_available.stdout
+  tags:
+     - deploy
+
+- name: add proper permission to slumber api consumer django user
+  become_user: "{{ rtd_user }}"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings=readthedocs.settings.managed"
+  args:
+    stdin: "from django.contrib.auth.models import User, Permission; u = User.objects.get(username='{{ SLUMBER_USERNAME }}'); p = Permission.objects.get(codename='view_project', content_type__app_label='projects'); u.user_permissions.add(p); p = Permission.objects.get(codename='view_version', content_type__app_label='builds'); u.user_permissions.add(p);"
+  when: app == 1
   tags:
      - deploy
 
