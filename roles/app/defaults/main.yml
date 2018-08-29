@@ -26,7 +26,7 @@ PUBLIC_API_URL: '{{ rtd_proto }}://{{ rtd_baseurl }}'
 PUBLIC_DOMAIN: '{{ rtd_domain }}'
 MEDIA_URL: '{{ rtd_proto }}://{{ rtd_baseurl }}/media/'
 docker_rtd_image: readthedocs/build:2.0
-DEBUG: True
+DEBUG: False
 DOCKER_ENABLE: True
 EMAIL_HOST: smtp.mailgun.org
 USE_SMTP: True
