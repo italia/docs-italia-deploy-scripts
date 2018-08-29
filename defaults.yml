@@ -4,7 +4,7 @@ docker_pull: 1
 # apt cache timing
 cache_valid_time: 3600
 
-DEBUG: True
+DEBUG: False
 # production is UA-122854273-2
 GLOBAL_ANALYTICS_CODE: UA-122854273-1
 GITHUB_APP_ID: !vault |
