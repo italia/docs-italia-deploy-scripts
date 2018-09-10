@@ -9,4 +9,4 @@ converter_filters_branch: master
 converter_cleanup: 0
 converter_build: 0
 converter_binary_url: https://github.com/italia/docs-italia-comandi-conversione/releases/download/v0.6
-converter_binary_filters_url: https://github.com/italia/docs-italia-pandoc-filters/releases/download/v0.1.2.2
+converter_binary_filters_url: https://github.com/italia/docs-italia-pandoc-filters/releases/download/v0.1.4

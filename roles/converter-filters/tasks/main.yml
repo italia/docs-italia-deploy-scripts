@@ -177,12 +177,16 @@
     dest: "/usr/local/bin/{{ item }}"
     remote_src: yes
     force: "{{ force }}"
+    mode: 0755
   with_items:
     - filtro-acronimi
     - filtro-didascalia
+    - filtro-google-docs
     - filtro-quotes
+    - filtro-references
     - filtro-rimuovi-div
     - filtro-stile-liste
+
   when: converter == 1 and converter_build == 0
   tags:
      - deploy_converter
