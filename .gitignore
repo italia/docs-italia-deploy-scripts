@@ -6,3 +6,4 @@ hosts
 vault*
 utils
 cluster*
+.env
