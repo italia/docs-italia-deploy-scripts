@@ -152,6 +152,11 @@ class CommunityProdSettings(CommunityBaseSettings):
     CORS_ORIGIN_WHITELIST = (
         '{{ rtd_domain }}:8000',
     )
+
+{% if CORS_HEADERS_HOSTS == 'all' %}
+    CORS_ORIGIN_ALLOW_ALL = True
+{% endif %}
+
     WEBSOCKET_HOST = '{{ rtd_domain }}:8088'
 
     DATABASES = {
