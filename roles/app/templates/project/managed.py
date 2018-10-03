@@ -15,7 +15,8 @@ _redis = {
 class CommunityProdSettings(CommunityBaseSettings):
 
     """Settings for local development"""
-
+    SERVE_DOCS = ['private']
+    PYTHON_MEDIA = True
     PRODUCTION_DOMAIN = '{{ rtd_domain }}'
     USE_SUBDOMAIN = False
     PUBLIC_DOMAIN = '{{ PUBLIC_DOMAIN }}'
