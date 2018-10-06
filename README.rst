@@ -144,6 +144,39 @@ Optionally this playbook can install docx/odt -> RST converter platform
 
 It is installed as a application under the main main project and is available on the ``/converter`` URL
 
+**Be aware that installing this will require ~= 6GB of storage and 1h of time (depending on VM connection speed and CPU power)**
+
+backup
+======
+
+By using the ``backup`` role, one can install the database daily backup. Database configuration are shared with the ``app`` role,
+thus no specific configuration is needed by default.
+
+Tag
+***
+
+The role provides two tags:
+
+* ``setup``: configure the backup script and crontab
+* ``backup``: run ``setup``, run the backup script and fetch the dump on the local computer
+
+Tags are available in the standard ``setup.yml`` playbook, as well as in the dedicated ``backup.yml``
+
+Examples
+********
+
+* ``ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tsetup`` setup and configure the script
+* ``ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tbackup`` run the backup and fetch it locally
+
+Variables
+*********
+
+The ``backup`` role provides dedicated variables :
+
+* ``sql_backup_history[=30]``: oldest backup to be kept on the server
+* ``sql_backup_dir[=/var/local/backup]``: local server directory to store backup files
+* ``sql_backup_script[=/usr/local/sbin/backup_sql.sh]``: backup script path
+
 ====
 TODO
 ====
