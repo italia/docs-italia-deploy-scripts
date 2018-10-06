@@ -37,6 +37,7 @@ converter_app_repo: git+https://github.com/italia/docs-italia-convertitore-web
 converter_app_branch: master
 SENTRY_DSN:
 api_host: 'localhost:8002'
+CORS_HEADERS_HOSTS: 'all'
 
 # comma separated list of hostnames
 es_hosts: 'localhost'
