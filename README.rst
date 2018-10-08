@@ -117,7 +117,7 @@ If you want to create a custom playbook, take into accounts the **strict** roles
 Available tags
 ==============
 
-* setup: services installation:
+* ``setup``: services installation:
     * nginx
     * elasticsearch
     * postgres
@@ -125,16 +125,18 @@ Available tags
     * docker
     * pandoc / converter commands
 
-* init: data initialization
+* ``init``: data initialization
     * pull docker image
 
-* configuration: configuration updates
+* ``configuration``: configuration updates
     * services configuration for rtd projects
 
-* deploy: application deployment
+* ``deploy``: application deployment
     * django projects deployment
 
-* deploy_pandoc: update converter commands
+* ``settings``: update django settings configuration
+
+* ``deploy_pandoc``: update converter commands
 
 
 pandoc / converter
