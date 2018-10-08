@@ -8,3 +8,4 @@ utils
 cluster*
 .env
 .python-version
+backups

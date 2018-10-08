@@ -1,0 +1,67 @@
+
+- name: check backup directory
+  file:
+    path: "{{ sql_backup_dir }}"
+    state: directory
+  when: sql == 1
+  tags:
+     - backup
+     - setup
+
+- name: backup script
+  template:
+    src: "../templates/backup_sql.sh"
+    dest: "{{ sql_backup_script }}"
+    force: 1
+    mode: 0755
+  when: sql == 1
+  tags:
+     - backup
+     - setup
+
+- name: pgpass setup
+  lineinfile:
+    path: /root/.pgpass
+    line: "{{ rtd_db_host|default('localhost', true) }}:{{ rtd_db_port }}:*:{{ rtd_db_user }}:{{ rtd_db_pass }}"
+    create: yes
+    mode: 0600
+  when: sql == 1
+  tags:
+     - backup
+     - setup
+
+- name: Schedule daily backup
+  cron:
+    name: "daily backup"
+    minute: "23"
+    hour: "1"
+    job: "{{ sql_backup_script }}"
+    cron_file: backup_sql
+    user: root
+  when: sql == 1
+  tags:
+     - backup
+     - setup
+
+- name: run backup
+  command: "{{ sql_backup_script }}"
+  register: backup_file
+  when: sql == 1
+  tags:
+     - backup
+
+- name: download backup
+  fetch:
+    src: "{{ backup_file.stdout }}"
+    dest: backups
+  when: sql == 1
+  tags:
+     - backup
+
+- name: remove remote backup
+  file:
+    path: "{{ backup_file.stdout }}"
+    state: absent
+  when: sql == 1
+  tags:
+     - backup

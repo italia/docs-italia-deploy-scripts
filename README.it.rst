@@ -14,6 +14,7 @@ role disponibili
 * sql: PostgreSQL
 * update: apt update
 * web: Server http
+* backup: Backup del database
 
 Variabili
 =========
@@ -141,6 +142,48 @@ pandoc / converter
 Questo playbook può installare anche un convertitore di documenti nel formato RST.
 
 Esso viene installato come un'applicazione del progetto principale e sarà disponibile all'URL ``/converti``.
+
+backup
+======
+
+Tramite il role ``backup`` è possibile installare il backup giornaliero del database. Le informazioni sul database
+sono le stesse usate per il setup dell'applicazione, per cui di default non sono necessarie ulteriori opzioni.
+
+Tag
+***
+
+Il role mette a disposizione due tag:
+
+* ``setup``: configurazione dello script di backup e del crontab
+* ``backup``: esegue il ``setup``. lancia il backup e scarica sul computer locale il backup eseguito
+
+i tag sono disponibili sia nel playbook ``setup.yml``, sia in uno dedicato ``backup.yml``
+
+Esempi
+********
+
+* ``ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tsetup`` setup e configurazione del backup
+* ``ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tbackup`` esegue il backup e scarica il file in locale
+
+Variabili
+*********
+
+A parte quelle relative alla configurazione del database condivise con il role ``app`` sono disponibili le seguenti variabili:
+
+* ``sql_backup_history[=30]``: numero massimo di giorni per i file di backup
+* ``sql_backup_dir[=/var/local/backup]``: directory locale del server dove archiviare i backup
+* ``sql_backup_script[=/usr/local/sbin/backup_sql.sh]``: percorso dello script di backup
+
+Archiviazione remota
+********************
+
+TODO
+
+2 soluzioni possibili:
+
+* integrare un scp nello script di backup
+* montare sul server uno storage condiviso
+
 
 ====
 TODO
