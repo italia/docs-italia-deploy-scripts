@@ -38,6 +38,8 @@ converter_app_branch: master
 SENTRY_DSN:
 api_host: 'localhost:8002'
 CORS_HEADERS_HOSTS: 'all'
+# production is UA-122854273-2
+GLOBAL_ANALYTICS_CODE: UA-122854273-1
 
 # comma separated list of hostnames
 es_hosts: 'localhost'

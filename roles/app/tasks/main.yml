@@ -136,7 +136,6 @@
   template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/settings/{{ item }}"
   with_items:
     - managed.py
-  when: app == 1
   tags:
      - deploy
      - settings
@@ -239,6 +238,7 @@
   tags:
      - configuration
      - deploy
+     - settings
 
 - name: nginx configuration
   template: src=../templates/nginx/{{ item }}  dest=/etc/nginx/{{ item  }} force=1

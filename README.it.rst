@@ -116,7 +116,7 @@ Se vuoi creare un playbook custom, tieni in considerazione queste dipendenze **s
 Tag disponibili
 ===============
 
-* setup: services installation:
+* ``setup``: services installation:
     * nginx
     * elasticsearch
     * postgres
@@ -124,16 +124,17 @@ Tag disponibili
     * docker
     * pandoc / converter commands
 
-* init: data initialization
-    * pull docker image
+* ``init``: inizializzazione
+    * aggiornamento immagine docker
 
-* configuration: configuration updates
-    * services configuration for rtd projects
+* ``configuration``: aggiornamento configurazione di sistema
+    * compresi i servizi / daemon RTD
 
-* deploy: application deployment
-    * django projects deployment
+* ``deploy``: deployment applicazione Django
 
-* deploy_pandoc: update converter commands
+* ``settings``: aggiornamento settings application Django
+
+* ``deploy_pandoc``: aggiornamento comandi conversione
 
 
 pandoc / converter
