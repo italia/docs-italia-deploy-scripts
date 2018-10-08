@@ -40,6 +40,7 @@ api_host: 'localhost:8002'
 CORS_HEADERS_HOSTS: 'all'
 # production is UA-122854273-2
 GLOBAL_ANALYTICS_CODE: UA-122854273-1
+requirements_extra: "django-restricted-sessions, setuptools>=33"
 
 # comma separated list of hostnames
 es_hosts: 'localhost'
