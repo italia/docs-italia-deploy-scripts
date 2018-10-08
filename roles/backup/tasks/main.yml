@@ -22,7 +22,7 @@
 - name: pgpass setup
   lineinfile:
     path: /root/.pgpass
-    line: "{{ rtd_db_host }}:{{ rtd_db_port }}:*:{{ rtd_db_user }}:{{ rtd_db_pass }}"
+    line: "{{ rtd_db_host|default('localhost', true) }}:{{ rtd_db_port }}:*:{{ rtd_db_user }}:{{ rtd_db_pass }}"
     create: yes
     mode: 0600
   when: sql == 1
