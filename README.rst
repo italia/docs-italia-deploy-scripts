@@ -144,8 +144,6 @@ Optionally this playbook can install docx/odt -> RST converter platform
 
 It is installed as a application under the main main project and is available on the ``/converter`` URL
 
-**Be aware that installing this will require ~= 6GB of storage and 1h of time (depending on VM connection speed and CPU power)**
-
 ====
 TODO
 ====
