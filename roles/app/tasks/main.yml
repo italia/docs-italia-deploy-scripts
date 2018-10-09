@@ -99,11 +99,8 @@
 - name: install additional requirements in virtualenv
   become_user: "{{ rtd_user }}"
   pip:
-    name: "{{ item }}"
+    name: "{{ requirements_extra }}"
     virtualenv: "{{ rtd_virtualenv }}"
-  with_items:
-    - django-restricted-sessions
-    - "setuptools>=33"
   when: app == 1
   tags:
      - deploy
@@ -111,22 +108,18 @@
 - name: install sentry dependency
   become_user: "{{ rtd_user }}"
   pip:
-    name: "{{ item }}"
+    name: "raven>=6.9"
     virtualenv: "{{ rtd_virtualenv }}"
-  with_items:
-    - "raven>=6.9"
   when: app == 1 and SENTRY_DSN
   tags:
      - deploy
 
-- name: install additional requirements in virtualenv
+- name: install converter
   become_user: "{{ rtd_user }}"
   pip:
-    name: "{{ item }}"
+    name: "{{ converter_app_repo }}@{{ converter_app_branch }}#egg=docs_italia_convertitore_web"
     virtualenv: "{{ rtd_virtualenv }}"
     editable: 1
-  with_items:
-    - "{{ converter_app_repo }}@{{ converter_app_branch }}#egg=docs_italia_convertitore_web"
   when: app == 1 and converter == 1
   tags:
      - deploy
@@ -136,6 +129,7 @@
   template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/settings/{{ item }}"
   with_items:
     - managed.py
+  when: app == 1
   tags:
      - deploy
      - settings
