@@ -1,20 +1,31 @@
 
 - name: check backup directory
   file:
-    path: "{{ sql_backup_dir }}"
+    path: "{{ backup_dir }}"
     state: directory
+  when: sql == 1 or app == 1
+  tags:
+     - backup
+     - setup
+
+- name: SQL backup script
+  template:
+    src: "../templates/backup_sql.sh"
+    dest: "{{ backup_sql_script }}"
+    force: 1
+    mode: 0755
   when: sql == 1
   tags:
      - backup
      - setup
 
-- name: backup script
+- name: SSL backup script
   template:
-    src: "../templates/backup_sql.sh"
-    dest: "{{ sql_backup_script }}"
+    src: "../templates/backup_ssl.sh"
+    dest: "{{ backup_ssl_script }}"
     force: 1
     mode: 0755
-  when: sql == 1
+  when: app == 1
   tags:
      - backup
      - setup
@@ -30,12 +41,12 @@
      - backup
      - setup
 
-- name: Schedule daily backup
+- name: Schedule daily SQL backup
   cron:
     name: "daily backup"
     minute: "23"
     hour: "1"
-    job: "{{ sql_backup_script }}"
+    job: "{{ backup_sql_script }}"
     cron_file: backup_sql
     user: root
   when: sql == 1
@@ -43,16 +54,30 @@
      - backup
      - setup
 
+- name: Schedule weekly SSL backup
+  cron:
+    name: "weekly SSL backup"
+    minute: "23"
+    hour: "5"
+    dow: "7"
+    job: "{{ backup_ssl_script }}"
+    cron_file: backup_ssl
+    user: root
+  when: app == 1
+  tags:
+     - backup
+     - setup
+
 - name: run backup
-  command: "{{ sql_backup_script }}"
-  register: backup_file
+  command: "{{ backup_sql_script }}"
+  register: backup_sql_file
   when: sql == 1
   tags:
      - backup
 
 - name: download backup
   fetch:
-    src: "{{ backup_file.stdout }}"
+    src: "{{ backup_sql_file.stdout }}"
     dest: backups
   when: sql == 1
   tags:
@@ -60,8 +85,96 @@
 
 - name: remove remote backup
   file:
-    path: "{{ backup_file.stdout }}"
+    path: "{{ backup_sql_file.stdout }}"
     state: absent
   when: sql == 1
   tags:
      - backup
+
+- name: run SSL backup
+  command: "{{ backup_ssl_script }}"
+  register: backup_ssl_file
+  when: app == 1
+  tags:
+     - backup
+
+- name: download backup
+  fetch:
+    src: "{{ backup_ssl_file.stdout }}"
+    dest: backups
+  when: app == 1
+  tags:
+     - backup
+
+- name: remove remote backup
+  file:
+    path: "{{ backup_ssl_file.stdout }}"
+    state: absent
+  when: app == 1
+  tags:
+     - backup
+
+- name: Copy local dump for restore
+  copy:
+    src: "{{ local_dump }}"
+    dest: /tmp/restore.sql.gz
+  when: sql == 1
+  tags:
+     - restore
+
+- name: stop RTD services
+  service: name={{ item }} state=stopped
+  with_items: "{{ systemd_rtd_services }}"
+  when: app == 1
+  tags:
+     - restore
+
+- name: drop old docs.italia.it db
+  become_user: "postgres"
+  postgresql_db:
+    name: "{{ rtd_db_name }}"
+    state: absent
+  when: sql == 1
+  tags:
+     - restore
+
+- name: create new docs.italia.it db
+  become_user: "postgres"
+  postgresql_db:
+    name: "{{ rtd_db_name }}"
+    state: present
+  when: sql == 1
+  tags:
+     - restore
+
+- name: restore docs.italia.it db
+  become_user: "postgres"
+  postgresql_db:
+    name: "{{ rtd_db_name }}"
+    owner: "{{ rtd_db_user }}"
+    state: restore
+    target: /tmp/restore.sql.gz
+  when: sql == 1
+  tags:
+     - restore
+
+- name: restore SSL certificates
+  unarchive:
+    src: "{{ local_ssl }}"
+    dest: /etc
+  when: app == 1
+  tags:
+     - restore
+
+- name: start RTD services
+  service: name={{ item }} state=started
+  with_items: "{{ systemd_rtd_services }}"
+  when: app == 1
+  tags:
+     - restore
+
+- name: start nginx services
+  service: name=nginx state=restarted
+  when: app == 1
+  tags:
+     - restore

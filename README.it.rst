@@ -163,8 +163,14 @@ i tag sono disponibili sia nel playbook ``setup.yml``, sia in uno dedicato ``bac
 Esempi
 ********
 
-* ``ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tsetup`` setup e configurazione del backup
-* ``ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tbackup`` esegue il backup e scarica il file in locale
+Setup e configurazione backup::
+
+    ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tsetup
+
+
+Esecuzione del backup e download del file::
+
+    ansible-playbook -i cluster backup.yml --vault-password-file=vault.txt -tbackup
 
 Variabili
 *********
@@ -184,6 +190,32 @@ TODO
 
 * integrare un scp nello script di backup
 * montare sul server uno storage condiviso
+
+Rebuild documenti
+=================
+
+Il rebuild massivo di documenti può essere lanciato tramite il role ``docs`` (reso disponibile nel playbook ``documents``) che è una semplice interfaccia ansible sul comando ``build_docs`` di ``docsitalia``.
+
+Il role ansible espone due variabili opzionali, che corrispondono agli argomento del management command ``build_docs``:
+
+* ``document``: nome del documento di cui lanciare la compilazione (in tutte le versioni pubblicate)
+* ``publisher``: nome del publisher del quale rilanciare la compilazione (in tutte le versioni pubblicate) di tutti i documenti disponibili
+
+Se lanciato senza argomenti la compilazione avviene per **tutti i documenti** di **tutti i publisher**.
+
+La compilazione avviene in modalità asincrona sul server così da terminare immediatamente l'esecuzione del role.
+
+Esempi
+******
+
+Compilazione delle versioni del documento ``docs-italia-guide``::
+
+    ansible-playbook -i cluster documents.yml -edocument=docs-italia-guide --vault-password-file=vault.txt -tbuild_docs
+
+Compilazione delle versioni di tutti i documenti del publisher ``italia``::
+
+    ansible-playbook -i cluster documents.yml -epublisher=italia --vault-password-file=vault.txt -tbuild_docs
+
 
 
 ====

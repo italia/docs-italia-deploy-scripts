@@ -1,0 +1,12 @@
+
+---
+- hosts: hosts
+  gather_facts: True
+  become: yes
+
+  vars_files:
+    - defaults.yml
+
+  roles:
+    - { role: app }
+    - { role: docs }

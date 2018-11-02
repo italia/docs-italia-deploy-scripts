@@ -170,6 +170,16 @@
   tags:
      - deploy
 
+- name: Build documents script
+  template:
+    src: "../templates/projec/build_docs.sh"
+    dest: "{{ rtd_build_script }}"
+    force: 1
+    mode: 0755
+  when: app == 1
+  tags:
+     - deploy
+
 - name: run collectstatic
   become_user: "{{ rtd_user }}"
   command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py collectstatic -lc --noinput --settings=readthedocs.settings.managed"
@@ -209,12 +219,7 @@
 
 - name: systemd configuration
   template: src=../templates/systemd/{{ item }}  dest=/etc/systemd/system/{{ item }} mode=644 force=1
-  with_items:
-    - rtd_celery_build.service
-    - rtd_celery_docs.service
-    - rtd_celery_web.service
-    - rtd_gunicorn_api.service
-    - rtd_gunicorn_web.service
+  with_items: "{{ systemd_rtd_services }}"
   when: app == 1
   tags:
      - configuration
@@ -222,12 +227,7 @@
 
 - name: systemd enable
   systemd: name="{{ item }}" state=restarted enabled=True daemon_reload=yes
-  with_items:
-    - rtd_celery_build.service
-    - rtd_celery_docs.service
-    - rtd_celery_web.service
-    - rtd_gunicorn_api.service
-    - rtd_gunicorn_web.service
+  with_items: "{{ systemd_rtd_services }}"
   when: app == 1
   tags:
      - configuration

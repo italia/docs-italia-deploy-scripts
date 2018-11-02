@@ -1,0 +1,25 @@
+- name: version slug to be rebuilt
+  set_fact: version_arg="--vers {{ version }}"
+  when: version and app == 1
+  tags:
+    - build_docs
+
+- name: document to be rebuilt
+  set_fact: document_arg="--document {{ document }}"
+  when: document and app == 1
+  tags:
+    - build_docs
+
+- name: publisher to be rebuilt
+  set_fact: publisher_arg="--publisher {{ publisher }}"
+  when: publisher and app == 1
+  tags:
+    - build_docs
+
+- name: run document builds
+  become_user: "{{ rtd_user }}"
+  become_flags: -i
+  shell: "{{ rtd_build_script }} {{ publisher_arg }} {{ document_arg }} {{ version_arg }}"
+  when: app == 1
+  tags:
+     - build_docs
