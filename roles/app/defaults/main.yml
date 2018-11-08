@@ -21,6 +21,7 @@ rtd_redis_celery: localhost:6379/1
 rtd_redis_cache: localhost:6379/0
 rtd_redis_stats: localhost:6379/2
 rtd_proto: http
+rtd_build_script: /usr/local/sbin/build_docs.sh
 DEFAULT_FROM_EMAIL: 'admin@docs.italia.it'
 PUBLIC_API_URL: '{{ rtd_proto }}://{{ rtd_baseurl }}'
 PUBLIC_DOMAIN: '{{ rtd_domain }}'
@@ -46,3 +47,10 @@ requirements_extra: "django-restricted-sessions, setuptools>=33"
 es_hosts: 'localhost'
 app_hosts: 'docs'
 worker_hosts: 'docs'
+
+systemd_rtd_services:
+  - rtd_celery_build.service
+  - rtd_celery_docs.service
+  - rtd_celery_web.service
+  - rtd_gunicorn_api.service
+  - rtd_gunicorn_web.service
