@@ -172,7 +172,7 @@
 
 - name: Build documents script
   template:
-    src: "../templates/projec/build_docs.sh"
+    src: "../templates/project/build_docs.sh"
     dest: "{{ rtd_build_script }}"
     force: 1
     mode: 0755
