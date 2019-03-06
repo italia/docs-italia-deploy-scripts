@@ -240,6 +240,7 @@
     - nginx.conf
     - conf.d/general-configuration.conf
     - sites-available/readthedocs-main.conf
+    - snippets/docs-redirects.conf
     - fallback_defaults
     - proxy_defaults
   notify: reload nginx
