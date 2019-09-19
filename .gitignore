@@ -9,3 +9,4 @@ cluster*
 .env
 .python-version
 backups
+env
