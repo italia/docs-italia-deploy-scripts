@@ -1,5 +1,5 @@
 rtd_repo: https://github.com/italia/docs.italia.it/
-rtd_branch: italia-2.3.13
+rtd_branch: production
 rtd_home: /home/docs
 rtd_user: docs
 rtd_db_name: docs_italia
