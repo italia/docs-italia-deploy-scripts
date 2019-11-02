@@ -2,8 +2,12 @@
 # This allows to run the rebuild_projects management command in a screen session to easily launch batch document rebuild
 set -e
 
-cd ${HOME}
+cd {{ rtd_root }}
 CMD="{{ rtd_virtualenv }}/bin/python"
-COMMAND="{{ rtd_root }}/manage.py rebuild_projects --settings=readthedocs.settings.managed --async"
+COMMAND="{{ rtd_root }}/manage.py update_repos -f --settings={{ django_settings_module }}"
 
-${CMD} ${COMMAND} ${@:1}
+if [[ `whoami` == "root" ]]; then
+  sudo -u docs ${CMD} ${COMMAND} ${@:1}
+else
+  ${CMD} ${COMMAND} ${@:1}
+fi

@@ -1,12 +1,31 @@
 
+- name: update git
+  # RTD 3.7+ requires a git version newer than the one in ubuntu 16.04 we use on deployment environments
+  apt_repository:
+    repo: ppa:git-core/ppa
+  when: app == 1
+  tags:
+    - setup
+
 - name: support packages
-  apt: pkg={{ item }} state=present update_cache=true install_recommends=no
+  apt: pkg={{ item }} state=present update_cache=true install_recommends=no state=latest
   with_items:
     - git
     - redis-server
     - redis-tools
     - ca-certificates
     - gunicorn
+  when: app == 1
+  tags:
+    - setup
+
+- name: wait-for-it
+  get_url:
+    url: "https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh"
+    dest: "/usr/local/bin/wait-for-it"
+    remote_src: yes
+    force: "{{ force }}"
+    mode: 0755
   when: app == 1
   tags:
      - setup
@@ -86,7 +105,7 @@
 - name: update virtualenv (python 3)
   become_user: "{{ rtd_user }}"
   pip:
-    requirements: "{{ rtd_root }}/requirements/deploy.txt"
+    requirements: "{{ rtd_root }}/requirements/docsitalia.txt"
     virtualenv: "{{ rtd_virtualenv }}"
     virtualenv_command: "/usr/bin/python{{ python_version }} -m venv"
   when: app == 1 and python_version != 2.7
@@ -96,7 +115,7 @@
 - name: update virtualenv (python 2.7)
   become_user: "{{ rtd_user }}"
   pip:
-    requirements: "{{ rtd_root }}/requirements/deploy.txt"
+    requirements: "{{ rtd_root }}/requirements/docsitalia.txt"
     virtualenv: "{{ rtd_virtualenv }}"
     virtualenv_command: "/usr/bin/virtualenv -p /usr/bin/python{{ python_version }}"
   when: app == 1 and python_version == 2.7
@@ -133,9 +152,9 @@
 
 - name: django configuration
   become_user: "{{ rtd_user }}"
-  template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/settings/{{ item }}"
+  template: src=../templates/project/{{ item }} dest="{{ rtd_root }}/readthedocs/docsitalia/settings/{{ item }}"
   with_items:
-    - managed.py
+    - local_settings.py
   when: app == 1
   tags:
      - deploy
@@ -143,14 +162,16 @@
 
 - name: run migrations
   become_user: "{{ rtd_user }}"
-  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py migrate --settings=readthedocs.settings.managed"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py migrate --settings={{ django_settings_module }}"
+  environment:
+    DOCSITALIA_UPGRADE: "{{ upgrade_setup }}"
   when: app == 1
   tags:
      - deploy
 
 - name: check if slumber api consumer django user exists
   become_user: "{{ rtd_user }}"
-  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings=readthedocs.settings.managed"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings={{ django_settings_module }}"
   args:
     stdin: "from django.contrib.auth.models import User; User.objects.filter(username='{{ SLUMBER_USERNAME }}').exists()"
   register: build_user_available
@@ -159,21 +180,21 @@
   tags:
      - deploy
 
-- name: create slumber api consumer django user if not available
+- name: ==UPGRADE-ONLY== force python version on projects
   become_user: "{{ rtd_user }}"
-  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings=readthedocs.settings.managed"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings={{ django_settings_module }}"
   args:
-    stdin: "from django.contrib.auth.models import User; User.objects.create_user('{{ SLUMBER_USERNAME }}', password='{{ SLUMBER_PASSWORD }}', is_staff=True);"
-  when: app == 1 and 'False' in build_user_available.stdout
+    stdin: "from readthedocs.projects.models import Project; Project.objects.all().update(python_interpreter='python3');"
+  when: app == 1 and upgrade_setup == 1
   tags:
      - deploy
 
 - name: add proper permission to slumber api consumer django user
   become_user: "{{ rtd_user }}"
-  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings=readthedocs.settings.managed"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py shell --settings={{ django_settings_module }}"
   args:
     stdin: "from django.contrib.auth.models import User, Permission; u = User.objects.get(username='{{ SLUMBER_USERNAME }}'); p = Permission.objects.get(codename='view_project', content_type__app_label='projects'); u.user_permissions.add(p); p = Permission.objects.get(codename='view_version', content_type__app_label='builds'); u.user_permissions.add(p);"
-  when: app == 1
+  when: app == 1 and False
   tags:
      - deploy
 
@@ -187,20 +208,33 @@
   tags:
      - deploy
 
-- name: run collectstatic
-  become_user: "{{ rtd_user }}"
-  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py collectstatic -lc --noinput --settings=readthedocs.settings.managed"
+- name: Build es script
+  template:
+    src: "../templates/project/build_es.sh"
+    dest: "{{ rtd_build_es_script }}"
+    force: 1
+    mode: 0755
   when: app == 1
   tags:
      - deploy
 
-- name: run provision_elasticsearch command
+- name: run collectstatic
   become_user: "{{ rtd_user }}"
-  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py provision_elasticsearch --settings=readthedocs.settings.managed"
-  ignore_errors: yes
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py collectstatic -lc --noinput --settings={{ django_settings_module }}"
   when: app == 1
   tags:
-     - setup
+     - deploy
+
+- name: ==UPGRADE-ONLY== drop elastic search indices
+  become_user: "{{ rtd_user }}"
+  command: "{{ rtd_virtualenv }}/bin/python {{ rtd_root }}/manage.py clear_elasticsearch --settings={{ django_settings_module }}"
+  ignore_errors: yes
+  when: app == 1 and upgrade_setup==1
+  tags:
+     - deploy
+  notify:
+     - restart elasticsearch
+     - reindex elasticsearch
 
 - name: systemd environment
   template: src=../templates/systemd/{{ item }}  dest="{{ rtd_home}}/{{ item }}" mode=644
@@ -232,6 +266,14 @@
      - configuration
      - deploy
 
+- name: remove legacy systemd configuration
+  file: path=/etc/systemd/system/{{ item }} state=absent
+  with_items: "{{ systemd_rtd_services_removed }}"
+  when: app == 1
+  tags:
+     - configuration
+     - deploy
+
 - name: systemd enable
   systemd: name="{{ item }}" state=restarted enabled=True daemon_reload=yes
   with_items: "{{ systemd_rtd_services }}"
@@ -240,6 +282,9 @@
      - configuration
      - deploy
      - settings
+  notify:
+     - restart rtd gunicorn
+     - restart rtd celery
 
 - name: nginx configuration
   template: src=../templates/nginx/{{ item }}  dest=/etc/nginx/{{ item  }} force=1
