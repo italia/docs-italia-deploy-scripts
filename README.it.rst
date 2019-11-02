@@ -2,6 +2,18 @@
 Script Ansible per il setup dell'infrastruttura di Docs Italia
 ==============================================================
 
+Versioni
+================
+
+Il branch ``master`` supporta sempre la versione attualmente in produzione di docs italia.
+
+Esistono poi branch specifici per supportare versioni legacy o future per il deployment in ambienti diversi dalla
+produzione.
+
+Attualmente:
+
+- ``italia-2.3.13``
+
 role disponibili
 ================
 

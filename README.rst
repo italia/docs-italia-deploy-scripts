@@ -2,6 +2,17 @@
 Ansible scripts to setup docs.italia infrastructure
 ===================================================
 
+Versions
+================
+
+``master`` branch supports the `docs italia` version currently on production environment.
+
+Version-specific branches are created to support legacy of future versions for deploy on non-production environments.
+
+Current branches:
+
+- ``italia-2.3.13`` (for docs-italia ``italia-2.3.13`` branch)
+
 Available roles
 ===============
 
