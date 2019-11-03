@@ -7,7 +7,7 @@ CMD="{{ rtd_virtualenv }}/bin/python"
 COMMAND="{{ rtd_root }}/manage.py reindex_elasticsearch --settings={{ django_settings_module }}"
 
 if [[ `whoami` == "root" ]]; then
-    wait-for-it -s -t 300 192.168.93.68:9200 -- sudo -u docs ${CMD} ${COMMAND} ${@:1}
+    wait-for-it -s -t 300 {{ es_hosts }} -- sudo -u docs ${CMD} ${COMMAND} ${@:1}
 else
-    wait-for-it -s -t 300 192.168.93.68:9200 -- ${CMD} ${COMMAND} ${@:1}
+    wait-for-it -s -t 300 {{ es_hosts }} -- ${CMD} ${COMMAND} ${@:1}
 fi
