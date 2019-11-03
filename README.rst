@@ -178,6 +178,7 @@ The ``backup`` role provides dedicated variables :
 * ``sql_backup_history[=30]``: oldest backup to be kept on the server
 * ``sql_backup_dir[=/var/local/backup]``: local server directory to store backup files
 * ``sql_backup_script[=/usr/local/sbin/backup_sql.sh]``: backup script path
+* ``backup_delete[=]``: if set to ``delete``, makes backup scripts delete backups older than ``sql_backup_history``.
 
 ====
 TODO

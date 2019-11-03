@@ -2,3 +2,4 @@ backup_history: 30
 backup_dir: /var/local/backup
 backup_sql_script: /usr/local/sbin/backup_sql.sh
 backup_ssl_script: /usr/local/sbin/backup_ssl.sh
+backup_delete:
