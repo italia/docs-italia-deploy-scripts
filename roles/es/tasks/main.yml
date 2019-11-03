@@ -35,8 +35,14 @@
      - setup
 
 - name: Install ES plugin
+  command: /usr/share/elasticsearch/bin/elasticsearch-plugin remove analysis-icu
+  when: es == 1 and ('analysis-icu' in es_plugins.stdout_lines and upgrade_setup == 1)
+  tags:
+     - setup
+
+- name: Install ES plugin
   command: /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
-  when: es == 1 and 'analysis-icu' not in es_plugins.stdout_lines
+  when: es == 1 and ('analysis-icu' not in es_plugins.stdout_lines or upgrade_setup == 1)
   tags:
      - setup
 

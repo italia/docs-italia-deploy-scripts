@@ -103,6 +103,15 @@
   tags:
      - deploy
 
+- name: remove legacy virtualenv
+  become_user: "{{ rtd_user }}"
+  file:
+    path: "{{ rtd_virtualenv }}"
+    state: absent
+  when: app == 1 and upgrade_setup == 1
+  tags:
+     - deploy
+
 - name: update virtualenv (python 3)
   become_user: "{{ rtd_user }}"
   pip:
