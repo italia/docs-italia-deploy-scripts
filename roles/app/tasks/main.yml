@@ -103,6 +103,16 @@
   tags:
      - deploy
 
+- name: copy 404
+  become_user: "{{ rtd_user }}"
+  copy:
+    src: "{{ rtd_root }}/docker/nginx/404"
+    dest: "{{ rtd_root }}/media/html/"
+    remote_src: yes
+  when: app == 1
+  tags:
+     - deploy
+
 - name: remove legacy virtualenv
   become_user: "{{ rtd_user }}"
   file:
