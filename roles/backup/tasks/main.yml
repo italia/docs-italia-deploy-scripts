@@ -73,6 +73,7 @@
   register: backup_sql_file
   when: sql == 1
   tags:
+     - never
      - backup
 
 - name: download backup
@@ -81,6 +82,7 @@
     dest: backups
   when: sql == 1
   tags:
+     - never
      - backup
 
 - name: remove remote backup
@@ -89,6 +91,7 @@
     state: absent
   when: sql == 1
   tags:
+     - never
      - backup
 
 - name: run SSL backup
@@ -96,6 +99,7 @@
   register: backup_ssl_file
   when: app == 1
   tags:
+     - never
      - backup
 
 - name: download backup
@@ -104,6 +108,7 @@
     dest: backups
   when: app == 1
   tags:
+     - never
      - backup
 
 - name: remove remote backup
@@ -112,21 +117,24 @@
     state: absent
   when: app == 1
   tags:
+     - never
      - backup
-
-- name: Copy local dump for restore
-  copy:
-    src: "{{ local_dump }}"
-    dest: /tmp/restore.sql.gz
-  when: sql == 1
-  tags:
-     - restore
 
 - name: stop RTD services
   service: name={{ item }} state=stopped
   with_items: "{{ systemd_rtd_services }}"
   when: app == 1
   tags:
+     - never
+     - restore
+
+- name: Copy local dump for restore
+  copy:
+    src: "{{ local_dump }}"
+    dest: /tmp/restore.sql.gz
+  when: sql == 1 and local_dump is defined
+  tags:
+     - never
      - restore
 
 - name: drop old docs.italia.it db
@@ -134,8 +142,9 @@
   postgresql_db:
     name: "{{ rtd_db_name }}"
     state: absent
-  when: sql == 1
+  when: sql == 1 and local_dump is defined
   tags:
+     - never
      - restore
 
 - name: create new docs.italia.it db
@@ -143,8 +152,9 @@
   postgresql_db:
     name: "{{ rtd_db_name }}"
     state: present
-  when: sql == 1
+  when: sql == 1 and local_dump is defined
   tags:
+     - never
      - restore
 
 - name: restore docs.italia.it db
@@ -154,16 +164,18 @@
     owner: "{{ rtd_db_user }}"
     state: restore
     target: /tmp/restore.sql.gz
-  when: sql == 1
+  when: sql == 1 and local_dump is defined
   tags:
+     - never
      - restore
 
 - name: restore SSL certificates
   unarchive:
     src: "{{ local_ssl }}"
     dest: /etc
-  when: app == 1
+  when: app == 1 and local_ssl is defined
   tags:
+     - never
      - restore
 
 - name: start RTD services
@@ -171,10 +183,12 @@
   with_items: "{{ systemd_rtd_services }}"
   when: app == 1
   tags:
+     - never
      - restore
 
 - name: start nginx services
   service: name=nginx state=restarted
   when: app == 1
   tags:
+     - never
      - restore
