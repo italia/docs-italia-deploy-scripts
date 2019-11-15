@@ -120,19 +120,19 @@
      - never
      - backup
 
-- name: Copy local dump for restore
-  copy:
-    src: "{{ local_dump }}"
-    dest: /tmp/restore.sql.gz
-  when: sql == 1
-  tags:
-     - never
-     - restore
-
 - name: stop RTD services
   service: name={{ item }} state=stopped
   with_items: "{{ systemd_rtd_services }}"
   when: app == 1
+  tags:
+     - never
+     - restore
+
+- name: Copy local dump for restore
+  copy:
+    src: "{{ local_dump }}"
+    dest: /tmp/restore.sql.gz
+  when: sql == 1 and local_dump is defined
   tags:
      - never
      - restore
@@ -142,7 +142,7 @@
   postgresql_db:
     name: "{{ rtd_db_name }}"
     state: absent
-  when: sql == 1
+  when: sql == 1 and local_dump is defined
   tags:
      - never
      - restore
@@ -152,7 +152,7 @@
   postgresql_db:
     name: "{{ rtd_db_name }}"
     state: present
-  when: sql == 1
+  when: sql == 1 and local_dump is defined
   tags:
      - never
      - restore
@@ -164,7 +164,7 @@
     owner: "{{ rtd_db_user }}"
     state: restore
     target: /tmp/restore.sql.gz
-  when: sql == 1
+  when: sql == 1 and local_dump is defined
   tags:
      - never
      - restore
@@ -173,7 +173,7 @@
   unarchive:
     src: "{{ local_ssl }}"
     dest: /etc
-  when: app == 1
+  when: app == 1 and local_ssl is defined
   tags:
      - never
      - restore
