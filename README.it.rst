@@ -192,6 +192,7 @@ A parte quelle relative alla configurazione del database condivise con il role `
 * ``sql_backup_history[=30]``: numero massimo di giorni per i file di backup
 * ``sql_backup_dir[=/var/local/backup]``: directory locale del server dove archiviare i backup
 * ``sql_backup_script[=/usr/local/sbin/backup_sql.sh]``: percorso dello script di backup
+* ``backup_delete[=]``: se valorizzato a ``delete`` gli script di backup cancellano i backup più vecchi di ``sql_backup_history``.
 
 Archiviazione remota
 ********************

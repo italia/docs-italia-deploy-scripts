@@ -69,7 +69,7 @@
      - setup
 
 - name: run backup
-  command: "{{ backup_sql_script }}"
+  command: "{{ backup_sql_script }} {{ backup_delete }}"
   register: backup_sql_file
   when: sql == 1
   tags:
@@ -92,7 +92,7 @@
      - backup
 
 - name: run SSL backup
-  command: "{{ backup_ssl_script }}"
+  command: "{{ backup_ssl_script }} {{ backup_delete }}"
   register: backup_ssl_file
   when: app == 1
   tags:
