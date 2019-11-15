@@ -73,6 +73,7 @@
   register: backup_sql_file
   when: sql == 1
   tags:
+     - never
      - backup
 
 - name: download backup
@@ -81,6 +82,7 @@
     dest: backups
   when: sql == 1
   tags:
+     - never
      - backup
 
 - name: remove remote backup
@@ -89,6 +91,7 @@
     state: absent
   when: sql == 1
   tags:
+     - never
      - backup
 
 - name: run SSL backup
@@ -96,6 +99,7 @@
   register: backup_ssl_file
   when: app == 1
   tags:
+     - never
      - backup
 
 - name: download backup
@@ -104,6 +108,7 @@
     dest: backups
   when: app == 1
   tags:
+     - never
      - backup
 
 - name: remove remote backup
@@ -112,6 +117,7 @@
     state: absent
   when: app == 1
   tags:
+     - never
      - backup
 
 - name: Copy local dump for restore
@@ -120,6 +126,7 @@
     dest: /tmp/restore.sql.gz
   when: sql == 1
   tags:
+     - never
      - restore
 
 - name: stop RTD services
@@ -127,6 +134,7 @@
   with_items: "{{ systemd_rtd_services }}"
   when: app == 1
   tags:
+     - never
      - restore
 
 - name: drop old docs.italia.it db
@@ -136,6 +144,7 @@
     state: absent
   when: sql == 1
   tags:
+     - never
      - restore
 
 - name: create new docs.italia.it db
@@ -145,6 +154,7 @@
     state: present
   when: sql == 1
   tags:
+     - never
      - restore
 
 - name: restore docs.italia.it db
@@ -156,6 +166,7 @@
     target: /tmp/restore.sql.gz
   when: sql == 1
   tags:
+     - never
      - restore
 
 - name: restore SSL certificates
@@ -164,6 +175,7 @@
     dest: /etc
   when: app == 1
   tags:
+     - never
      - restore
 
 - name: start RTD services
@@ -171,10 +183,12 @@
   with_items: "{{ systemd_rtd_services }}"
   when: app == 1
   tags:
+     - never
      - restore
 
 - name: start nginx services
   service: name=nginx state=restarted
   when: app == 1
   tags:
+     - never
      - restore
