@@ -103,6 +103,15 @@
   tags:
      - deploy
 
+- name: ensure html dir exists
+  become_user: "{{ rtd_user }}"
+  file:
+    path: "{{ rtd_root }}/media/html/"
+    state: directory
+  when: app == 1
+  tags:
+     - deploy
+
 - name: copy 404
   become_user: "{{ rtd_user }}"
   copy:
