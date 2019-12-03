@@ -1,9 +1,17 @@
 - name: restart celery
-  service: name=rtd_celery* state=restarted
+  service: name=rtd_celery_build state=restarted
+  listen: "restart rtd celery"
+
+- name: restart celery
+  service: name=rtd_celery_web state=restarted
   listen: "restart rtd celery"
 
 - name: restart gunicorn
-  service: name=rtd_gunicorn* state=restarted
+  service: name=rtd_gunicorn_web state=restarted
+  listen: "restart rtd gunicorn"
+
+- name: restart gunicorn
+  service: name=rtd_gunicorn_api state=restarted
   listen: "restart rtd gunicorn"
 
 - name: restart nginx
@@ -11,3 +19,11 @@
 
 - name: reload nginx
   service: name=nginx state=reloaded
+
+- name: restart elasticsearch
+  service: name=elasticsearch state=restarted
+  listen: "restart elasticsearch"
+
+- name: reindex elasticsearch
+  command: "{{ rtd_build_es_script }}"
+  listen: "reindex elasticsearch"

@@ -1,9 +1,22 @@
 
+- name: deadsnakes key
+  apt_key: keyserver=keyserver.ubuntu.com id=BA6932366A755776 state=present
+  when: python == 1
+  tags:
+    - setup
+
+- name: Add deadsnakes repos python 3.x
+  apt_repository: repo='deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu {{ ansible_distribution_release }} main' state=present
+  when: python == 1
+  tags:
+    - setup
+
 - name: python packages
   apt: pkg={{ item }} state=present update_cache=true install_recommends=no
   with_items:
     - python{{ python_version }}
     - python{{ python_version }}-dev
+    - python{{ python_version }}-venv
     - virtualenv
     - build-essential
     - libxml2-dev

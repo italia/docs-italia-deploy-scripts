@@ -4,10 +4,10 @@ set -e
 
 cd {{ rtd_root }}
 CMD="{{ rtd_virtualenv }}/bin/python"
-COMMAND="{{ rtd_root }}/manage.py update_repos -f --settings={{ django_settings_module }}"
+COMMAND="{{ rtd_root }}/manage.py reindex_elasticsearch --settings={{ django_settings_module }}"
 
 if [[ `whoami` == "root" ]]; then
-  sudo -u docs ${CMD} ${COMMAND} ${@:1}
+    wait-for-it -s -t 300 {{ es_hosts }} -- sudo -u docs ${CMD} ${COMMAND} ${@:1}
 else
-  ${CMD} ${COMMAND} ${@:1}
+    wait-for-it -s -t 300 {{ es_hosts }} -- ${CMD} ${COMMAND} ${@:1}
 fi

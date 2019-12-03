@@ -18,4 +18,3 @@
     - { role: app }
     - { role: converter-filters }
     - { role: docker }
-    - { role: backup }

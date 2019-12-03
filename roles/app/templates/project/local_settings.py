@@ -3,7 +3,7 @@
 import os
 import re
 
-from .base import CommunityBaseSettings
+from readthedocs.settings.base import CommunityBaseSettings
 
 _redis = {
     'default': dict(zip(['host', 'port', 'db'], re.split(':|/', '{{ rtd_redis_cache }}'))),
@@ -21,8 +21,8 @@ class CommunityProdSettings(CommunityBaseSettings):
     USE_SUBDOMAIN = False
     PUBLIC_DOMAIN = '{{ PUBLIC_DOMAIN }}'
     PUBLIC_API_URL = '{{ PUBLIC_API_URL }}'
-    PUBLIC_PROTO = '{{ rtd_proto }}'
     GLOBAL_ANALYTICS_CODE = '{{ GLOBAL_ANALYTICS_CODE }}'
+    PUBLIC_DOMAIN_USES_HTTPS = '{{ rtd_proto }}' == 'https'
 
     # default build versions
     RTD_LATEST = 'bozza'
@@ -34,6 +34,9 @@ class CommunityProdSettings(CommunityBaseSettings):
     DEBUG = {{ DEBUG }}
     TEMPLATE_DEBUG = False
 
+    DOCS_BASE = os.environ.get('DOCS_BASE', CommunityBaseSettings.SITE_ROOT)
+    MEDIA_ROOT = os.path.join(DOCS_BASE, 'media/')
+    STATIC_ROOT = os.path.join(DOCS_BASE, 'media/static/')
     MEDIA_URL = '{{ MEDIA_URL }}'
     STATIC_URL = '{{ MEDIA_URL }}static/'
     ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
@@ -41,11 +44,29 @@ class CommunityProdSettings(CommunityBaseSettings):
     DEFAULT_FROM_EMAIL = '{{ DEFAULT_FROM_EMAIL }}'
     SESSION_COOKIE_DOMAIN = '{{ rtd_domain }}'
 
+    DOCROOT = os.path.join(DOCS_BASE, 'user_builds')
+    UPLOAD_ROOT = os.path.join(DOCS_BASE, 'user_uploads')
+    CNAME_ROOT = os.path.join(DOCS_BASE, 'cnames')
+    LOGS_ROOT = os.path.join(DOCS_BASE, 'logs')
+    PRODUCTION_ROOT = os.path.join(DOCS_BASE, 'prod_artifacts')
+    PUBLIC_BASE = DOCS_BASE
+    PRIVATE_BASE = DOCS_BASE
+
+    @property
+    def TEMPLATES(self):  # noqa
+        TEMPLATES = super().TEMPLATES
+        TEMPLATE_OVERRIDES = os.path.join(super().TEMPLATE_ROOT, 'docsitalia', 'overrides')
+        TEMPLATES[0]['DIRS'].insert(0, TEMPLATE_OVERRIDES)
+        return TEMPLATES
+
     @property
     def INSTALLED_APPS(self):  # noqa
         apps = super(CommunityProdSettings, self).INSTALLED_APPS
         # Insert our depends above RTD applications, after guaranteed third
         # party package
+        apps.append('readthedocs.docsitalia')
+        apps.append('dal', )
+        apps.append('dal_select2', )
         {% if USE_CONVERTER %}apps.insert(apps.index('rest_framework'), 'docs_italia_convertitore_web'){% endif %}
 
         {% if SENTRY_DSN|string|length %}apps.insert(apps.index('rest_framework'), 'raven.contrib.django.raven_compat'){% endif %}
@@ -82,7 +103,8 @@ class CommunityProdSettings(CommunityBaseSettings):
     import raven
     RAVEN_CONFIG = {
         'dsn': '{{ SENTRY_DSN }}',
-        'release': raven.fetch_git_sha(CommunityBaseSettings.SITE_ROOT)
+        'release': raven.fetch_git_sha(CommunityBaseSettings.SITE_ROOT),
+        'environment': '{{ SENTRY_ENVIRONMENT }}'
     }
     {% endif %}
 
@@ -99,6 +121,11 @@ class CommunityProdSettings(CommunityBaseSettings):
 
     # Elastic Search
     ES_HOSTS = '{{ es_hosts }}'.split(',')
+    ELASTICSEARCH_DSL = {
+        'default': {
+            'hosts': ES_HOSTS
+        },
+    }
 
     # RTD settings
     # This goes together with FILE_SYNCER setting
@@ -205,8 +232,8 @@ class CommunityProdSettings(CommunityBaseSettings):
 
     # Add fancy sessions after the session middleware
     @property
-    def MIDDLEWARE_CLASSES(self):
-        classes = super(CommunityProdSettings, self).MIDDLEWARE_CLASSES
+    def MIDDLEWARE(self):
+        classes = super(CommunityProdSettings, self).MIDDLEWARE
         classes = list(classes)
         index = classes.index(
             'readthedocs.core.middleware.FooterNoSessionMiddleware'

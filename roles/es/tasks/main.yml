@@ -14,14 +14,8 @@
      - setup
 
 - name: Add ES repos
-  apt_repository: repo='deb http://packages.elastic.co/elasticsearch/1.3/debian stable main' state=present
-  when: es == 1 and es_legacy
-  tags:
-     - setup
-
-- name: Add ES repos
-  apt_repository: repo='deb http://artifacts.elastic.co/packages/5.x/apt stable main' state=present
-  when: es == 1 and not es_legacy
+  apt_repository: repo='deb https://artifacts.elastic.co/packages/6.x/apt stable main' state=present
+  when: es == 1
   tags:
      - setup
 
@@ -41,8 +35,14 @@
      - setup
 
 - name: Install ES plugin
+  command: /usr/share/elasticsearch/bin/elasticsearch-plugin remove analysis-icu
+  when: es == 1 and ('analysis-icu' in es_plugins.stdout_lines and upgrade_setup == 1)
+  tags:
+     - setup
+
+- name: Install ES plugin
   command: /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
-  when: es == 1 and 'analysis-icu' not in es_plugins.stdout_lines
+  when: es == 1 and ('analysis-icu' not in es_plugins.stdout_lines or upgrade_setup == 1)
   tags:
      - setup
 
@@ -51,7 +51,7 @@
     path: /etc/elasticsearch/elasticsearch.yml
     state: present
     line: "cluster.name: docsitalia"
-  when: es == 1 and es_hosts != 'localhost'
+  when: es == 1 and es_hosts != 'localhost:9200'
   tags:
      - setup
 
@@ -60,7 +60,7 @@
     path: /etc/elasticsearch/elasticsearch.yml
     state: present
     line: "network.host: {{ ansible_default_ipv4.address }}"
-  when: es == 1 and es_hosts != 'localhost'
+  when: es == 1 and es_hosts != 'localhost:9200'
   tags:
      - setup
 

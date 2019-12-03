@@ -17,6 +17,7 @@
   when: http ==1
   with_items:
     - certbot
+    - python3-certbot-nginx
   tags:
      - setup
 

@@ -22,11 +22,13 @@ rtd_redis_cache: localhost:6379/0
 rtd_redis_stats: localhost:6379/2
 rtd_proto: http
 rtd_build_script: /usr/local/sbin/build_docs.sh
+rtd_build_es_script: /usr/local/sbin/build_es.sh
 DEFAULT_FROM_EMAIL: 'admin@docs.italia.it'
 PUBLIC_API_URL: '{{ rtd_proto }}://{{ rtd_baseurl }}'
 PUBLIC_DOMAIN: '{{ rtd_domain }}'
 MEDIA_URL: '{{ rtd_proto }}://{{ rtd_baseurl }}/media/'
-docker_rtd_image: readthedocs/build:2.0
+SENTRY_ENVIRONMENT: 'dev'
+docker_rtd_image: readthedocs/build:3.0
 DEBUG: False
 DOCKER_ENABLE: True
 EMAIL_HOST: smtp.mailgun.org
@@ -42,15 +44,19 @@ CORS_HEADERS_HOSTS: 'all'
 # production is UA-122854273-2
 GLOBAL_ANALYTICS_CODE: UA-122854273-1
 requirements_extra: "django-restricted-sessions, setuptools>=33"
+upgrade_setup: 0
+django_settings_module: "readthedocs.docsitalia.settings.local_settings"
 
 # comma separated list of hostnames
-es_hosts: 'localhost'
+es_hosts: 'localhost:9200'
 app_hosts: 'docs'
 worker_hosts: 'docs'
 
 systemd_rtd_services:
   - rtd_celery_build.service
-  - rtd_celery_docs.service
   - rtd_celery_web.service
   - rtd_gunicorn_api.service
   - rtd_gunicorn_web.service
+
+systemd_rtd_services_removed:
+  - rtd_celery_docs.service
