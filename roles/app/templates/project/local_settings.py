@@ -45,6 +45,7 @@ class CommunityProdSettings(CommunityBaseSettings):
     SECRET_KEY = '{{ SECRET_KEY }}'
     DEFAULT_FROM_EMAIL = '{{ DEFAULT_FROM_EMAIL }}'
     SESSION_COOKIE_DOMAIN = '{{ rtd_domain }}'
+    TAGGIT_TAGS_FROM_STRING = 'taggit.utils._parse_tags'
 
     DOCROOT = os.path.join(DOCS_BASE, 'user_builds')
     UPLOAD_ROOT = os.path.join(DOCS_BASE, 'user_uploads')
