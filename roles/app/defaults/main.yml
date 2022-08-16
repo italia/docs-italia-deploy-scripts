@@ -41,8 +41,7 @@ converter_app_branch: master
 SENTRY_DSN:
 api_host: 'localhost:8002'
 CORS_HEADERS_HOSTS: 'all'
-# production is UA-122854273-2
-GLOBAL_ANALYTICS_CODE: UA-122854273-1
+GLOBAL_ANALYTICS_CODE: ''
 requirements_extra: "django-restricted-sessions, setuptools>=33"
 upgrade_setup: 0
 django_settings_module: "readthedocs.docsitalia.settings.local_settings"
